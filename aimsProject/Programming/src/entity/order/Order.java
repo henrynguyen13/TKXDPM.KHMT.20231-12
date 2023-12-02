@@ -24,6 +24,7 @@ public class Order {
     /**
      * @param om
      */
+    // Comment: Data coupling, Sử dụng đối tượng OrderMedia để làm tham số
     public void addOrderMedia(OrderMedia om) {
         this.lstOrderMedia.add(om);
     }
@@ -32,6 +33,7 @@ public class Order {
     /**
      * @param om
      */
+    // Comment: Data coupling, Sử dụng đối tượng OrderMedia để làm tham số
     public void removeOrderMedia(OrderMedia om) {
         this.lstOrderMedia.remove(om);
     }
