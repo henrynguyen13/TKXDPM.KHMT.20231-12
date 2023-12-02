@@ -30,6 +30,7 @@ public class CartMedia {
     /**
      * @param media
      */
+    // Comment: Data coupling: Sử dụng đối tượng Media từ class khác
     public void setMedia(Media media) {
         this.media = media;
     }
