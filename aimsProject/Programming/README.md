@@ -59,6 +59,29 @@ add these VM arguments:
 
 ## Author
 
-- nguyenlm - Software Engeneering Student - k61
-- manhvd - Software Engeneering Student - k61
-- hieudm - ICT - k61
+- khoand  - 20204572 - k65
+- khanhpd - 20204570 - k65
+- lamdvt  - 20204574 - k65
+- khanhpn - 20200324 - k65
+
+## Report
+<details>
+  <summary>W11: 27/11/2023~03/12/2023 </summary>
+<br>
+<details>
+<summary>Pham Duy Khanh - 20204570</summary>
+<br>
+
+- Assigned tasks:
+   - Find coupling in class Order
+   - Find coupling in class CartMedia
+
+- Implementation details:
+   - Pull Request(s): https://github.com/henrynguyen13/TKXDPM.KHMT.20231-12/pull/1
+   - Specific implementation details:
+      - Find coupling in class relation with Order
+
+</details>
+
+---
+
