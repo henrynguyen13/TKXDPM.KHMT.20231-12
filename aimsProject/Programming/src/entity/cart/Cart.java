@@ -28,6 +28,7 @@ public class Cart {
     /**
      * @param cm
      */
+    // Data coupling - Truyền đối tượng CartMedia và sử dụng trong phương thức add
     public void addCartMedia(CartMedia cm) {
         lstCartMedia.add(cm);
     }
@@ -36,6 +37,7 @@ public class Cart {
     /**
      * @param cm
      */
+    // Data coupling - Truyền đối tượng CartMedia và sử dụng trong phương thức remove
     public void removeCartMedia(CartMedia cm) {
         lstCartMedia.remove(cm);
     }
@@ -98,6 +100,7 @@ public class Cart {
      * @param media
      * @return CartMedia
      */
+    // Stamp coupling - Truyền cả đối tượng CartMedia nhưng phương thức chỉ truy cập thuộc tính id
     public CartMedia checkMediaInCart(Media media) {
         for (CartMedia cartMedia : lstCartMedia) {
             if (cartMedia.getMedia().getId() == media.getId()) return cartMedia;
