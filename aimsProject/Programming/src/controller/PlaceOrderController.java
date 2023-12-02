@@ -41,6 +41,8 @@ public class PlaceOrderController extends BaseController {
      * @return Order
      * @throws SQLException
      */
+
+    //Content coupling : Can thiệp trực tiếp vào biến của class Order
     public Order createOrder() throws SQLException {
         Order order = new Order();
         for (Object object : Cart.getCart().getListMedia()) {
@@ -59,6 +61,8 @@ public class PlaceOrderController extends BaseController {
      * @param order
      * @return Invoice
      */
+
+    //Data coupling: Truyền đối tượng Order làm tham số và sử dụng
     public Invoice createInvoice(Order order) {
         return new Invoice(order);
     }
@@ -150,6 +154,8 @@ public class PlaceOrderController extends BaseController {
      * @param order
      * @return shippingFee
      */
+
+    //Data coupling: Truyền đối tượng Order làm tham số và sử dụng
     public int calculateShippingFee(Order order) {
         Random rand = new Random();
         int fees = (int) (((rand.nextFloat() * 10) / 100) * order.getAmount());
@@ -164,6 +170,8 @@ public class PlaceOrderController extends BaseController {
      * @return media
      * @throws SQLException
      */
+
+    //Stamp coupling: Truyền cả đối tượng Order vào làm tham số tuy nhiên không truy cập hết các phương thức
     public Media getProductAvailablePlaceRush(Order order) throws SQLException {
         Media media = new Media();
         HashMap<String, String> deliveryInfo = order.getDeliveryInfo();
