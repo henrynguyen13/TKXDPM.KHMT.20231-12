@@ -49,6 +49,7 @@ public class MediaInvoiceScreenHandler extends FXMLScreenHandler {
      * @param orderMedia
      * @throws SQLException
      */
+    //Comment: Data coupling
     public void setOrderMedia(OrderMedia orderMedia) throws SQLException {
         this.orderMedia = orderMedia;
         setMediaInfo();

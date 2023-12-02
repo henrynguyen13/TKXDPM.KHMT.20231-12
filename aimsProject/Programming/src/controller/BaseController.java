@@ -21,6 +21,7 @@ public class BaseController {
      * @param media media object
      * @return CartMedia or null
      */
+    //Comment: Data coupling -> truy cập tới đối tượng Media
     public CartMedia checkMediaInCart(Media media) {
         return Cart.getCart().checkMediaInCart(media);
     }
