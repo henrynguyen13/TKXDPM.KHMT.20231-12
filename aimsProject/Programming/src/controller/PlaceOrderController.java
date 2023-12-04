@@ -74,6 +74,10 @@ public class PlaceOrderController extends BaseController {
      * @throws InterruptedException
      * @throws IOException
      */
+
+    //Comment: Procedural Cohesion:
+    // Phương thức validateDeliveryInfo và processDeliveryInfo đều liên quan đến việc xác nhận thông tin giao hàng
+    //với validateDeliveryInfo chịu trách nhiệm kiểm tra thông tin và processDeliveryInfo xử lý thông tin đó.
     public void processDeliveryInfo(HashMap info) throws InterruptedException, IOException {
         LOGGER.info("Process Delivery Info");
         LOGGER.info(info.toString());
@@ -96,6 +100,10 @@ public class PlaceOrderController extends BaseController {
      * @param phoneNumber
      * @return boolean
      */
+
+    //Comment: Functional Cohesion:
+    // Các phương thức validatePhoneNumber, validateName, validateAddress đều thực hiện các nhiệm vụ kiểm tra dữ liệu
+    // liên quan đến số điện thoại, tên, địa chỉ và trả về kết quả kiểm tra tương ứng.
     public boolean validatePhoneNumber(String phoneNumber) {
         // check the phoneNumber has 10 digits
         if (phoneNumber.length() != 10)
