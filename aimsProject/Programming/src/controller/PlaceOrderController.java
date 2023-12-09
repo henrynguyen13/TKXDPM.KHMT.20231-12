@@ -18,6 +18,11 @@ import java.util.logging.Logger;
  *
  * @author nguyenlm
  */
+
+/*Procedural cohesion
+  Các phương thức trong lớp được nhóm lại với nhau vì chúng được thiết kế để hoạt động cùng nhau nhằm hoàn thành một nhiệm vụ cụ thể: đặt hàng.
+  Giải pháp: Tạo các lớp dịch vụ riêng biệt cho từng chức năng chính ví dụ OrderController, InvoiceController, DeliveryInfoController
+*/
 public class PlaceOrderController extends BaseController {
 
     /**
@@ -43,8 +48,6 @@ public class PlaceOrderController extends BaseController {
      */
 
     //Content coupling : Can thiệp trực tiếp vào biến của class Order
-
-    //Logical cohesion:  Hàm createOrder nên nằm trong order
     public Order createOrder() throws SQLException {
         Order order = new Order();
         for (Object object : Cart.getCart().getListMedia()) {
