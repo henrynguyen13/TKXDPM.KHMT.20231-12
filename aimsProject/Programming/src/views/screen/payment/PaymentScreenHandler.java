@@ -18,6 +18,9 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+// Functional Cohesion
+// Các chức năng có liên quan chặt chẽ với nhau, cùng chung mục đích để xử lí trên giao diện màn hình Payment
+
 public class PaymentScreenHandler extends BaseScreenHandler {
 
     private Invoice invoice;
