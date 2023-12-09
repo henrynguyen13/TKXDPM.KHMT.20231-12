@@ -12,6 +12,8 @@ import views.screen.BaseScreenHandler;
 
 import java.io.IOException;
 
+// Functional Cohesion
+// Các chức năng có liên quan chặt chẽ với nhau, cùng chung mục đích để xử lí trên giao diện màn hình Popup
 
 public class PopupScreen extends BaseScreenHandler {
 
