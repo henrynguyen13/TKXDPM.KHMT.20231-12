@@ -16,6 +16,13 @@ import java.util.Map;
  *
  * @author hieud
  */
+
+/*Temporal cohesion
+Trong trường hợp này, cả hai chức năng đều liên quan đến việc hoàn thành quá trình thanh toán và được gọi lần lượt:
+makePaymentxử lý giao dịch thanh toán thực tế và trả về phản hồi.
+Nếu thanh toán thành công, emptyCartnó sẽ được gọi để xóa giỏ hàng của người dùng.
+Giải pháp: Chuyển emptyCart vào lớp hoặc dịch vụ riêng biệt cho việc quản lý Cart (CartController)
+*/
 public class PaymentController extends BaseController {
 
 
