@@ -15,6 +15,11 @@ import java.util.Map;
  * @author hieud
  *
  */
+
+/**
+ * Communicational cohesion
+ * Các phương thức đều truy cập và thao tác vào cùng đối tượng VNPaySubsystemController
+ */
 public class VnPaySubsystem implements VnPayInterface {
 
     /**

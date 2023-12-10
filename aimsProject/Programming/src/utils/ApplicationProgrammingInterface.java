@@ -13,6 +13,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 
+/**
+ * Coincidental cohesion
+ * Các phương thức không có sự liên quan tới nhau
+ */
 public class ApplicationProgrammingInterface {
 
     public static DateFormat DATE_FORMATER = new SimpleDateFormat("yyyyMMddHHmmss");

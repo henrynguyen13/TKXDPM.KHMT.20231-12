@@ -9,6 +9,11 @@ import java.sql.SQLException;
  *
  * @author nguyenlm
  */
+
+/*ViewCartController
+* Procedural cohesion
+*Thực hiện lần lượt các tác vụ khi người dùng bấm vào giỏ hàng
+* */
 public class ViewCartController extends BaseController {
 
     /**

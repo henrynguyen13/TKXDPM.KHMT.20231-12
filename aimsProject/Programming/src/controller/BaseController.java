@@ -12,6 +12,12 @@ import java.util.List;
  *
  * @author nguyenlm
  */
+
+/*Communicational cohesion
+*Cả hai phương thức đều truy cập và thao tác cùng một cấu trúc dữ liệu: Cả hai hàm đều dựa vào đối tượng Cart và dữ liệu bên trong của nó, đặc biệt là xử lý danh sách các đối tượng CartMedia trong Giỏ hàng.
+*Chúng thực hiện các nhiệm vụ khác nhau: Trong khi checkMediaInCartkiểm tra xem một đối tượng Media cụ thể có tồn tại trong Cart, getListCartMedia truy xuất toàn bộ danh sách các đối tượng CartMedia."
+*Giải pháp: Tạo một lớp riêng biệt dành riêng cho việc quản lý Cart (CartController)
+*/
 public class BaseController {
 
     /**

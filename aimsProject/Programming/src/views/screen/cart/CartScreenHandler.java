@@ -26,6 +26,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
+// Functional Cohesion
+// Các chức năng có liên quan chặt chẽ với nhau, cùng chung mục đích để xử lí trên giao diện màn hình Cart
+
 public class CartScreenHandler extends BaseScreenHandler {
 
     private static Logger LOGGER = Utils.getLogger(CartScreenHandler.class.getName());
