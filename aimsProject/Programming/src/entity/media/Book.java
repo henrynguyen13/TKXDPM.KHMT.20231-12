@@ -8,6 +8,8 @@ import java.sql.Statement;
 import java.util.Date;
 import java.util.List;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến Book
 public class Book extends Media {
 
     String author;

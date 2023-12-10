@@ -2,6 +2,8 @@ package entity.shipping;
 
 import jdk.jshell.spi.ExecutionControl;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến Shipment
 public class Shipment {
 
     private int shipType;

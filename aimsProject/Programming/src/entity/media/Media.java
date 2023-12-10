@@ -16,6 +16,8 @@ import java.util.logging.Logger;
  *
  * @author nguyenlm
  */
+// Functional Cohesion
+// Các chức năng có liên quan đến Media
 public class Media {
 
     protected static boolean isSupportedPlaceRushOrder = new Random().nextBoolean();
