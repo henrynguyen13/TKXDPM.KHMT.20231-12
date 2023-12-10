@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến Order
 public class Order {
 
     private int shippingFees;

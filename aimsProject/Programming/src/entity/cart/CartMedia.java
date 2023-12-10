@@ -2,6 +2,8 @@ package entity.cart;
 
 import entity.media.Media;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến CartMedia
 public class CartMedia {
 
     private Media media;

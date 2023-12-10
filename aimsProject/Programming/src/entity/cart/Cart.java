@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến Cart
 public class Cart {
 
     private static Cart cartInstance;
