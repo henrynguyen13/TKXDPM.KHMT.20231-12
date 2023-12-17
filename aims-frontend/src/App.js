@@ -1,12 +1,8 @@
-import "./App.css";
-import HeaderBar from "./components/layout/HeaderBar";
-function App() {
+import HomePage from "./features/home/HomePage";
+export default function App() {
   return (
     <>
-      <div className="font-bold">Hi</div>
-      <HeaderBar />
+      <HomePage />
     </>
   );
 }
-
-export default App;
