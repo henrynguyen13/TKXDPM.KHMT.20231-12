@@ -23,6 +23,11 @@ makePaymentxử lý giao dịch thanh toán thực tế và trả về phản h�
 Nếu thanh toán thành công, emptyCartnó sẽ được gọi để xóa giỏ hàng của người dùng.
 Giải pháp: Chuyển emptyCart vào lớp hoặc dịch vụ riêng biệt cho việc quản lý Cart (CartController)
 */
+
+/* Lớp này vi phạm nguyên lý một nhiệm vụ (Single Responsibility Principle)
+ * Lí do: Lớp đang có hai trách nhiệm riêng biệt: Xử lý thanh toán và quản lý giỏ hàng
+ * Giải pháp: Di chuyển phương thức emptyCart sang một lớp BaseController chịu trách nhiệm quản lý giỏ hàng. Điều này sẽ tách rời quá trình xử lý thanh toán và quản lý giỏ hàng, giúp mỗi lớp trở nên tập trung và dễ bảo trì hơn.
+ * */
 public class PaymentController extends BaseController {
 
 
