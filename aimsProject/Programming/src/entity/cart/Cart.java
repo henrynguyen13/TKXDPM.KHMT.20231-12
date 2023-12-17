@@ -9,6 +9,15 @@ import java.util.List;
 
 // Functional Cohesion
 // Các chức năng có liên quan đến Cart
+
+// Vi phạm Open/Close Principle
+// Cách khắc phục:
+    /*
+        Trong phương thức checkMediaInCart,
+        bạn có thể xem xét sử dụng một interface hoặc một phương thức truyền vào để kiểm tra sự tồn tại của sản phẩm.
+        Điều này sẽ làm cho mã nguồn mở rộng hơn khi bạn muốn kiểm tra sự tồn tại của một sản phẩm theo cách khác
+        mà không cần sửa đổi trực tiếp mã nguồn của lớp Cart.
+     */
 public class Cart {
 
     private static Cart cartInstance;
