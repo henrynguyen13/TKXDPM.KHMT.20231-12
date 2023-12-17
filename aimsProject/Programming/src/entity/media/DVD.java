@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến DVD
 public class DVD extends Media {
 
     String discType;

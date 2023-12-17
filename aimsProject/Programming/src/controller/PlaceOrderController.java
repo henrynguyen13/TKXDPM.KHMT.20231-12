@@ -23,6 +23,22 @@ import java.util.logging.Logger;
   Các phương thức trong lớp được nhóm lại với nhau vì chúng được thiết kế để hoạt động cùng nhau nhằm hoàn thành một nhiệm vụ cụ thể: đặt hàng.
   Giải pháp: Tạo các lớp dịch vụ riêng biệt cho từng chức năng chính ví dụ OrderController, InvoiceController, DeliveryInfoController
 */
+
+/*
+    // Lớp này vi phạm nguyên lý SRP trong SOLID
+    Lớp PlaceOrderController thực hiện nhiều chức năng khác nhau như kiểm tra sự có sẵn của sản phẩm,
+    tạo đơn hàng, tạo hóa đơn, xử lý thông tin giao hàng, và kiểm tra và xử lý dữ liệu khác.
+    Điều này có thể dẫn đến vi phạm nguyên tắc SRP, vì một lớp nên chỉ có một lý do để thay đổi.
+    Nếu có sự thay đổi trong quy trình đặt hàng, đơn hàng, hoặc hóa đơn, có thể ảnh hưởng đến lớp này.
+    Giải pháp: Tách các chức năng khác nhau thành các lớp riêng biệt
+
+    // Lớp này vi phạm nguyên lý DIP trong SOLID
+    Lớp này có một số phương thức trực tiếp gọi các phương thức của lớp cụ thể khác như Cart và Order.
+    Điều này làm tăng sự ràng buộc giữa các lớp cụ thể và làm giảm khả năng tái sử dụng.
+    Giải pháp: Định nghĩa một giao diện hoặc lớp trừu tượng cho các thành phần bên trong PlaceOrderController,
+    chẳng hạn như Cart và OrderProcessor. Sau đó, lớp PlaceOrderController chỉ phụ thuộc vào các interface
+    hoặc abstract class này thay vì các lớp cụ thể.
+ */
 public class PlaceOrderController extends BaseController {
 
     /**
@@ -79,6 +95,10 @@ public class PlaceOrderController extends BaseController {
      * @throws InterruptedException
      * @throws IOException
      */
+
+    //Comment: Procedural Cohesion:
+    // Phương thức validateDeliveryInfo và processDeliveryInfo đều liên quan đến việc xác nhận thông tin giao hàng
+    //với validateDeliveryInfo chịu trách nhiệm kiểm tra thông tin và processDeliveryInfo xử lý thông tin đó.
     public void processDeliveryInfo(HashMap info) throws InterruptedException, IOException {
         LOGGER.info("Process Delivery Info");
         LOGGER.info(info.toString());
@@ -101,6 +121,10 @@ public class PlaceOrderController extends BaseController {
      * @param phoneNumber
      * @return boolean
      */
+
+    //Comment: Functional Cohesion:
+    // Các phương thức validatePhoneNumber, validateName, validateAddress đều thực hiện các nhiệm vụ kiểm tra dữ liệu
+    // liên quan đến số điện thoại, tên, địa chỉ và trả về kết quả kiểm tra tương ứng.
     public boolean validatePhoneNumber(String phoneNumber) {
         // check the phoneNumber has 10 digits
         if (phoneNumber.length() != 10)

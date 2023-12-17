@@ -16,6 +16,9 @@ import views.screen.invoice.InvoiceScreenHandler;
 import java.io.IOException;
 import java.util.HashMap;
 
+// Functional Cohesion
+// Các chức năng có liên quan chặt chẽ với nhau, cùng chung mục đích để xử lí trên giao diện màn hình Delivery
+
 public class DeliveryMethodsScreenHandler extends BaseScreenHandler {
 
     private Order order;

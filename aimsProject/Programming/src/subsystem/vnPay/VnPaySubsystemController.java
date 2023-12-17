@@ -9,6 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Functional cohesion
+ * Các phương thức của class liên quan tới chức năng của VNPay như tạo URL thanh toán, xử lý mã phản hồi,...
+ */
 public class VnPaySubsystemController {
 
     private static final String PAY_COMMAND = "pay";

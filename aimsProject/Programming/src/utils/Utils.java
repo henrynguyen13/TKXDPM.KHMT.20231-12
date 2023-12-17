@@ -13,6 +13,11 @@ import java.util.logging.Logger;
 /**
  * @author nguyenlm Contains helper functions
  */
+
+/**
+ * Coincidental cohesion
+ * Các phương thức không có sự liên quan tới nhau
+ */
 public class Utils {
 
     public static DateFormat DATE_FORMATER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

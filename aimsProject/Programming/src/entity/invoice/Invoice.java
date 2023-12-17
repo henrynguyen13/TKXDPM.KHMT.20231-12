@@ -2,6 +2,8 @@ package entity.invoice;
 
 import entity.order.Order;
 
+// Functional Cohesion
+// Các chức năng có liên quan đến Invoice
 public class Invoice {
 
     private Order order;

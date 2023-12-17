@@ -32,6 +32,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
 
+// Functional Cohesion
+// Các chức năng có liên quan chặt chẽ với nhau, cùng chung mục đích để xử lí trên giao diện màn hình Home
+
 public class HomeScreenHandler extends BaseScreenHandler implements Initializable {
 
     public static Logger LOGGER = Utils.getLogger(HomeScreenHandler.class.getName());
