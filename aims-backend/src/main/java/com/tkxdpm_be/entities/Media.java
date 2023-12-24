@@ -8,14 +8,15 @@ import javax.persistence.*;
 @Entity
 @Table(name = "medias")
 public class Media {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String type;
-    private String category;
-    private Integer price;
-    private Integer quantity;
     private String title;
-    private Integer value;
+    private String type;
+    private String author;
     private String imageUrl;
+    private String description;
+    private double price;
+    private int quantityAvailable;
 }
