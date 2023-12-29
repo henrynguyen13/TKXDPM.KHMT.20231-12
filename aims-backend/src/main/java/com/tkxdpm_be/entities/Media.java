@@ -17,6 +17,10 @@ public class Media {
     private String author;
     private String imageUrl;
     private String description;
-    private double price;
-    private int quantityAvailable;
+    private Double value;
+    private Double price;
+    private Integer quantityAvailable;
+    private Double weight;
+    private Boolean isRush;
+    private String metaData;
 }
