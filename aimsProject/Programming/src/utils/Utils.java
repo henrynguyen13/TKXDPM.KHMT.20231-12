@@ -18,6 +18,9 @@ import java.util.logging.Logger;
  * Coincidental cohesion
  * Các phương thức không có sự liên quan tới nhau
  */
+
+//Lớp này vi phạm nguyên lý Single Responsibility Principle trong SOLID
+//Lý do: Các phương thức trong lớp đang thực hiện nhiều nhiệm vụ không liên quan đến nhau
 public class Utils {
 
     public static DateFormat DATE_FORMATER = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
