@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/medias")
 public class MediaController {
@@ -26,5 +28,13 @@ public class MediaController {
         BaseResponse<Page<Media>> response = new BaseResponse<>();
         response.setData(this.mediaService.findAllMedia(title, type, pageSize, pageNumber));
         return response;
+    }
+
+    @GetMapping("/hi")
+    public BaseResponse<List<Media>> getAllMedia(@RequestParam(required = false) String title) {
+        BaseResponse<List<Media>> response = new BaseResponse<>();
+        response.setData(this.mediaService.getAllMedia(title));
+        return response;
+
     }
 }

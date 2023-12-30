@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MediaService {
     private final MediaRepository mediaRepository;
@@ -18,5 +20,9 @@ public class MediaService {
     public Page<Media> findAllMedia(String title, String type, Integer pageSize, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber > 0 ? pageNumber - 1 : 0, pageSize);
         return this.mediaRepository.findAllMedia(title, type, pageable);
+    }
+
+    public List<Media> getAllMedia(String title) {
+        return this.mediaRepository.getAllMedia(title);
     }
 }
