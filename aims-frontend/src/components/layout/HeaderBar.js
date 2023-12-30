@@ -4,7 +4,12 @@ import Icon from "@mdi/react";
 import { mdiCartOutline } from "@mdi/js";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
+import { useNavigate } from "react-router-dom";
+
 export default function HeaderBar() {
+
+  const navigate = useNavigate();
+
   return (
     <div className="font-semibold text-white h-16 bg-[#209ED4] flex items-center justify-between px-3 ">
       <img src={logo} alt="" className="h-[50px] cursor-pointer" />
@@ -20,7 +25,7 @@ export default function HeaderBar() {
           color="error"
           className="cursor-pointer hover:opacity-90"
         >
-          <Icon path={mdiCartOutline} size={1.2} />
+          <Icon path={mdiCartOutline} size={1.2} onClick={() => navigate('/cart')} />
         </Badge>
         <Avatar
           alt="avatar"
