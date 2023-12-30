@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import utils.ApiException;
 
 @RestController
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/medias")
 public class MediaController {
     private final MediaService mediaService;
