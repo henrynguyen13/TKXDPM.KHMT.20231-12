@@ -6,17 +6,16 @@ import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import { FaStar } from "react-icons/fa";
 import { AiFillThunderbolt } from "react-icons/ai";
+import { Link } from "react-router-dom";
 export default function MediaCard({ product }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        sx={{ height: 300 }}
-        image={product.image}
-        title="green iguana"
-      />
+      <Link to={`products/${product.id}`}>
+        <CardMedia sx={{ height: 300 }} image={product.imageUrl} />
+      </Link>
 
       <CardContent>
-        <div className="font-semibold text-xl">{product.name}</div>
+        <div className="font-semibold text-xl">{product.title}</div>
         <div className="flex text-amber-500 mt-2">
           <FaStar />
           <FaStar />
@@ -30,7 +29,7 @@ export default function MediaCard({ product }) {
             ₫ {product.price}
           </div>
           <div className="font-medium ">
-            <span className="line-through">₫ 192.000</span>
+            <span className="line-through">₫ {product.value}</span>
             <span>
               {" "}
               <Chip

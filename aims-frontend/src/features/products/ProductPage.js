@@ -7,6 +7,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { ProductService } from "../../services/products.service";
 export default function ProductPage() {
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(0);
@@ -24,210 +25,18 @@ export default function ProductPage() {
     setCurrentPage(newPage - 1);
   };
   useEffect(() => {
-    setProducts([
-      {
-        id: "1",
-        name: "DVD Nhà Bà Nữ",
-        price: "172000",
-        image:
-          "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-        type: "dvd",
-      },
-      {
-        id: "2",
-        name: "CD Nhà Bà Nữ",
-        price: "202000",
-        image:
-          "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-        type: "cd",
-      },
-      {
-        id: "3",
-        name: "LP Nhà Bà Nữ",
-        price: "192000",
-        image:
-          "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-        type: "lp",
-      },
-      {
-        id: "4",
-        name: "Book Nhà Bà Nữ",
-        price: "182000",
-        image:
-          "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-        type: "book",
-      },
-    ]);
+    const getMedia = async () => {
+      try {
+        const response = await ProductService.getAllMedia(20, 1);
+        console.log("response", response);
+        setProducts(response?.data?.data?.content);
+      } catch (error) {
+        console.error("Error fetching media:", error);
+      }
+    };
+
+    getMedia();
   }, []);
-  //   const fakeproducts = [
-  //     {
-  //       id: "1",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //       type: "dvd",
-  //     },
-  //     {
-  //       id: "2",
-  //       name: "CD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //       type: "cd",
-  //     },
-  //     {
-  //       id: "3",
-  //       name: "LP Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //       type: "lp",
-  //     },
-  //     {
-  //       id: "4",
-  //       name: "Book Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //       type: "book",
-  //     },
-  //     {
-  //       id: "5",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "6",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "7",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "8",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "9",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "10",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-
-  //     {
-  //       id: "11",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "12",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "13",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "14",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "15",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "16",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "17",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "18",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "19",
-  //       name: "hiiiiii",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "20",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "21",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-
-  //     {
-  //       id: "22",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //     {
-  //       id: "23",
-  //       name: "DVD Nhà Bà Nữ",
-  //       price: "172000",
-  //       image:
-  //         "https://upload.wikimedia.org/wikipedia/vi/6/6f/%C3%81p_ph%C3%ADch_phim_Nh%C3%A0_b%C3%A0_N%E1%BB%AF.jpg",
-  //     },
-  //   ];
 
   const filterProducts = category
     ? products.filter((product) => product.type === category)
@@ -262,7 +71,7 @@ export default function ProductPage() {
               </FormControl>
             </Box>
           </div>
-          <div>Danh sách sản phẩm ({filterProducts.length})</div>
+          <div>Danh sách sản phẩm ({filterProducts?.length})</div>
           <div>
             <Box sx={{ minWidth: 200 }}>
               <FormControl fullWidth>
@@ -283,8 +92,11 @@ export default function ProductPage() {
         </div>
         <div className="grid grid-cols-12 gap-4 ">
           {filterProducts
-            .slice(currentPage * itemsPerPage, (currentPage + 1) * itemsPerPage)
-            .map((product, index) => (
+            ?.slice(
+              currentPage * itemsPerPage,
+              (currentPage + 1) * itemsPerPage
+            )
+            ?.map((product, index) => (
               <div
                 key={product.id}
                 className="col-span-3 mx-auto my-0 min-w-[300px]"
@@ -295,7 +107,7 @@ export default function ProductPage() {
         </div>
         <div className="flex justify-center py-6">
           <Pagination
-            count={Math.ceil(products.length / 20)}
+            count={Math.ceil(products?.length ? products.length / 20 : 1)}
             color="primary"
             size="large"
             defaultChecked={true}
