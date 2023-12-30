@@ -3,7 +3,7 @@ export default function HomePage() {
   return (
     <>
       <HeaderBar />
-      <div>Homepage</div>
+      {/* <div>Homepage</div> */}
     </>
   );
 }
