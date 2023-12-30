@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import utils.ApiException;
+import utils.ERROR;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MediaService {
@@ -22,7 +24,11 @@ public class MediaService {
         return this.mediaRepository.findAllMedia(title, type, pageable);
     }
 
-    public List<Media> getAllMedia(String title) {
-        return this.mediaRepository.getAllMedia(title);
+    public Media findById(Long id) throws ApiException {
+        Optional<Media> oMedia = this.mediaRepository.findById(id);
+        if (oMedia.isEmpty()) {
+            throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
+        }
+        return oMedia.get();
     }
 }
