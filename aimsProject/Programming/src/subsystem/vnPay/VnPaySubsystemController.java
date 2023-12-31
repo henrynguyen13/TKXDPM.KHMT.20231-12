@@ -110,6 +110,7 @@ public class VnPaySubsystemController {
      * @return PaymentTransaction
      */
     public PaymentTransaction makePaymentTransaction(Map<String, String> response) throws TransactionNotDoneException, TransactionFailedException, TransactionReverseException, UnrecognizedException {
+        System.out.println("response" + response);
         if (response == null) {
             return null;
         }
@@ -122,7 +123,7 @@ public class VnPaySubsystemController {
         String createdAt = response.get("vnp_PayDate");
         PaymentTransaction trans = new
                 PaymentTransaction(errorCode, transactionId, transactionContent, amount, createdAt);
-
+        System.out.println("trans" + trans.toString());
         switch (trans.getErrorCode()) {
             case "00":
                 break;
