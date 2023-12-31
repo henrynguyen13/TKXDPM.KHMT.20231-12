@@ -4,7 +4,14 @@ import Icon from "@mdi/react";
 import { mdiCartOutline } from "@mdi/js";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
+import { useNavigate } from "react-router-dom";
+import { useNumProduct } from "../../features/carts/NumProductInCartContext";
+
 export default function HeaderBar() {
+
+  const navigate = useNavigate();
+  const { numProduct } = useNumProduct();
+
   return (
     <div className="">
       <div className="font-semibold text-white h-16 bg-[#209ED4] flex items-center justify-between px-3 ">
@@ -17,11 +24,11 @@ export default function HeaderBar() {
             <li className="cursor-pointer p-3">Liên hệ</li>
           </ul>
           <Badge
-            badgeContent={4}
+            badgeContent={numProduct}
             color="error"
             className="cursor-pointer hover:opacity-90"
           >
-            <Icon path={mdiCartOutline} size={1.2} />
+            <Icon path={mdiCartOutline} size={1.2} onClick={() => navigate('/cart')} />
           </Badge>
           <Avatar
             alt="avatar"
