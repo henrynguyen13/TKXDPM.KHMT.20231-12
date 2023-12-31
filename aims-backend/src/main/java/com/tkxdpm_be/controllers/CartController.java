@@ -2,19 +2,21 @@ package com.tkxdpm_be.controllers;
 
 import com.tkxdpm_be.models.dtos.CartItemDto;
 import com.tkxdpm_be.services.CartService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import model.BaseResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
+@CrossOrigin(allowedHeaders = "*", origins = "*")
 @RequestMapping("/carts")
+@RequiredArgsConstructor
 public class CartController {
     private final CartService cartService;
-
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
 
     @PostMapping("/{user-id}")
     public BaseResponse<Long> addMediaToCart(@PathVariable(name = "user-id") Long userId,
@@ -25,9 +27,26 @@ public class CartController {
     }
 
     @GetMapping("/{user-id}")
-    public BaseResponse<List<CartItemDto>> getMediaInCart(@PathVariable(name = "user-id") Long userId) {
-        BaseResponse<List<CartItemDto>> response = new BaseResponse<>();
-        response.setData(this.cartService.getAllMediaInCart(userId));
-        return response;
+    public ResponseEntity<List<CartItemDto>> getMediaInCart(@PathVariable(name = "user-id") Long userId) {
+        List<CartItemDto> listMediaInCart = cartService.getAllMediaInCart(userId);
+        return ResponseEntity.ok().body(listMediaInCart);
+    }
+
+    @PutMapping("/quantityItem/{cartItemId}")
+    public void changeQuantityCartItem(@PathVariable(name = "cartItemId") Long cartItemId,
+                                                    @RequestBody Map<String, String> requestBody) {
+        String typeChange = requestBody.get("typeChange");
+        cartService.changeQuantityCartItem(cartItemId, typeChange);
+    }
+
+    @DeleteMapping("/delete/{cartItemId}")
+    public void deleteItemInCart(@PathVariable(name = "cartItemId") Long cartItemId) {
+        cartService.deleteItemInCart(cartItemId);
+    }
+
+    @GetMapping("/numProduct/{user-id}")
+    public ResponseEntity<Integer> getNumMediaInCart(@PathVariable(name = "user-id") Long userId) {
+        Integer numMediaInCart = cartService.getNumMediaInCart(userId);
+        return ResponseEntity.ok().body(numMediaInCart);
     }
 }

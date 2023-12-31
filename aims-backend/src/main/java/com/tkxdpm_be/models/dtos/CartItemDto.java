@@ -11,10 +11,8 @@ public class CartItemDto {
     private Long cartItemId;
     private Long mediaId;
     private String title;
-    private String type;
-    private Integer quantity;
-    private Double price;
-    private String description;
-    private String author;
     private String imageUrl;
+    private Double price;
+    private Integer quantityAvailable;
+    private Integer quantity;
 }

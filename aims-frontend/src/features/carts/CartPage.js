@@ -2,13 +2,50 @@ import './CartPage.css';
 import HeaderBar from '../../components/layout/HeaderBar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faTrashCan } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { CartService } from '../../services/cart.service';
+import { useNumProduct } from './NumProductInCartContext';
 
 const CartPage = () => {
 
-    const [numProduct, setNumProduct] = useState(4);
+    const [listMedia, setListMedia] = useState([]);
+    const [numProduct, setNumProduct] = useState(0);
+    const [subtotal, setSubtotal] = useState(0);
+
+    const { updateNumProduct } = useNumProduct();
+
+    const getListMediaCart = async () => {
+        try {
+            const response = await CartService.getAllMediaInCart();
+            setListMedia(response.data);
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    }
+
+    useEffect(() => {
+        getListMediaCart();
+    }, [listMedia]);
+
+    useEffect(() => {
+        if (listMedia.length > 0) {
+            let numItem = 0;
+            let subtotal = 0;
+            for (let item of listMedia) {
+                numItem += item.quantity;
+                subtotal += Math.round(item.price * item.quantity);
+            }
+            setNumProduct(numItem);
+            updateNumProduct(numItem);
+            setSubtotal(subtotal);
+        } else {
+            setNumProduct(0);
+            updateNumProduct(0);
+            setSubtotal(0);
+        }
+    }, [listMedia]);
 
     const handleOrder = () => {
         if (numProduct === 0) {
@@ -25,15 +62,65 @@ const CartPage = () => {
         }
     };
 
+    const handleQuantityItem = async (item, typeChange) => {
+        try {
+            if (item.quantity === 1 && typeChange === "subtract") return;
+            else if (item.quantity === item.quantityAvailable && typeChange === "add" ) {
+                toast.error(`Không thể thêm do số lượng hàng tồn trong kho của sản phẩm ${item.title} không đủ: ${item.quantityAvailable}`, {
+                    position: toast.POSITION.BOTTOM_RIGHT,
+                    containerId: 'cartToast',
+                    autoClose: 3000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    closeButton: false,
+                    theme: 'colored',
+                });
+                return;
+            }
+            else {
+                await CartService.changeQuantityItemInCart(item.cartItemId, typeChange);
+                getListMediaCart();
+            }
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    };
+
+    const handleDeleteItem = async (item) => {
+        try {
+            await CartService.deleteItemInCart(item.cartItemId);
+            toast.warning("Đã xóa sản phẩm khỏi giỏ hàng", {
+                position: toast.POSITION.BOTTOM_RIGHT,
+                containerId: 'cartToast',
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                closeButton: false,
+                theme: 'colored',
+            });
+            getListMediaCart();
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    };
+
+    const formatNumber = (number) => {
+        if (typeof number === 'number') {
+            return number.toLocaleString('vi-VN');
+        }
+        return '';
+    };
+
     return (
         <>
             <HeaderBar />
-            <ToastContainer containerId="cartToast" autoClose={3000} limit={1}/>
+            <ToastContainer containerId="cartToast" autoClose={3000} />
             <div className='cart-page'>
                 <div className='name-page'>Giỏ hàng của bạn</div>
                 <div className='num-products-text'>Tổng số <span className='num-products'>{numProduct} sản phẩm</span></div>
                 <div className='container'>
-                    <div className='left-container'>                        
+                    <div className='left-container'>     
+                        {listMedia.length > 0 && (                   
                         <div className='table-container'>
                             <table>
                                 <tbody>
@@ -45,107 +132,41 @@ const CartPage = () => {
                                         <th>Tổng</th>
                                         <th></th>
                                     </tr>
-                                    <tr className='record'> 
-                                        <td>1</td>
+                                    {listMedia.map((item, index) => (
+                                    <tr key={index} className='record'> 
+                                        <td>{index + 1}</td>
                                         <td style={{ width: '450px' }}>
                                             <div className='product'>
                                                 <div className='product-image'>
-                                                    <img src='https://vb.1cdn.vn/2022/12/03/nbn_teaser-poster_fb.jpg' alt='product' />
+                                                    <img src={item.imageUrl} alt='product' />
                                                 </div>
-                                                <div className='product-name'>DVD Nhà Bà Nữ</div>
+                                                <div className='product-name'>{item.title}</div>
                                             </div>
                                         </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
+                                        <td style={{ width: '135px' }}>{formatNumber(item.price)}</td>
                                         <td>
                                             <div className='quantity'>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faMinus} /></div>
-                                                <div>1</div>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faPlus} /></div>
+                                                <div><FontAwesomeIcon onClick={() => handleQuantityItem(item, "subtract")} className='icon-quantity' icon={faMinus} /></div>
+                                                <div>{item.quantity}</div>
+                                                <div><FontAwesomeIcon onClick={() => handleQuantityItem(item, "add")} className='icon-quantity' icon={faPlus} /></div>
                                             </div>
                                         </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
+                                        <td style={{ width: '135px' }}>{formatNumber(item.price * item.quantity)}</td>
                                         <td style={{ width: '100px' }}>
-                                            <div><FontAwesomeIcon className='icon-delete' icon={faTrashCan} /></div>
+                                            <div><FontAwesomeIcon onClick={() => handleDeleteItem(item)} className='icon-delete' icon={faTrashCan} /></div>
                                         </td>
                                     </tr>
-                                    <tr className='record'> 
-                                        <td>2</td>
-                                        <td style={{ width: '450px' }}>
-                                            <div className='product'>
-                                                <div className='product-image'>
-                                                    <img src='https://vb.1cdn.vn/2022/12/03/nbn_teaser-poster_fb.jpg' alt='product' />
-                                                </div>
-                                                <div className='product-name'>DVD Nhà Bà Nữ</div>
-                                            </div>
-                                        </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
-                                        <td>
-                                            <div className='quantity'>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faMinus} /></div>
-                                                <div>1</div>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faPlus} /></div>
-                                            </div>
-                                        </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
-                                        <td style={{ width: '100px' }}>
-                                            <div><FontAwesomeIcon className='icon-delete' icon={faTrashCan} /></div>
-                                        </td>
-                                    </tr>
-                                    <tr className='record'> 
-                                        <td>3</td>
-                                        <td style={{ width: '450px' }}>
-                                            <div className='product'>
-                                                <div className='product-image'>
-                                                    <img src='https://vb.1cdn.vn/2022/12/03/nbn_teaser-poster_fb.jpg' alt='product' />
-                                                </div>
-                                                <div className='product-name'>DVD Nhà Bà Nữ</div>
-                                            </div>
-                                        </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
-                                        <td>
-                                            <div className='quantity'>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faMinus} /></div>
-                                                <div>1</div>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faPlus} /></div>
-                                            </div>
-                                        </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
-                                        <td style={{ width: '100px' }}>
-                                            <div><FontAwesomeIcon className='icon-delete' icon={faTrashCan} /></div>
-                                        </td>
-                                    </tr>
-                                    <tr className='record'> 
-                                        <td>4</td>
-                                        <td style={{ width: '450px' }}>
-                                            <div className='product'>
-                                                <div className='product-image'>
-                                                    <img src='https://vb.1cdn.vn/2022/12/03/nbn_teaser-poster_fb.jpg' alt='product' />
-                                                </div>
-                                                <div className='product-name'>DVD Nhà Bà Nữ</div>
-                                            </div>
-                                        </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
-                                        <td>
-                                            <div className='quantity'>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faMinus} /></div>
-                                                <div>1</div>
-                                                <div><FontAwesomeIcon className='icon-quantity' icon={faPlus} /></div>
-                                            </div>
-                                        </td>
-                                        <td style={{ width: '135px' }}>172.000</td>
-                                        <td style={{ width: '100px' }}>
-                                            <div><FontAwesomeIcon className='icon-delete' icon={faTrashCan} /></div>
-                                        </td>
-                                    </tr>
+                                    ))}
                                 </tbody>
                             </table>
                         </div>
+                        )}
                     </div>
                     <div className='right-container'>
                         <div className='cost-container'>
                             <div className='cost-item'>
                                 <div>Tổng giá cả</div>
-                                <div>680.000đ</div>
+                                <div>{formatNumber(subtotal)}đ</div>
                             </div>
                             <div className='cost-item'>
                                 <div>VAT</div>
@@ -153,7 +174,7 @@ const CartPage = () => {
                             </div>
                             <div className='cost-item'>
                                 <div>Tổng tiền</div>
-                                <div>748.000đ</div>
+                                <div>{formatNumber(subtotal + subtotal * 10 / 100)}đ</div>
                             </div>
                         </div>
                         <div className='order-btn' onClick={handleOrder}>Đặt hàng</div>
