@@ -2,6 +2,7 @@ package com.tkxdpm_be.services;
 
 import com.tkxdpm_be.configs.VnPayConfig;
 import com.tkxdpm_be.models.dtos.PaymentTransaction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import utils.ApiException;
 import utils.ERROR;
@@ -17,10 +18,13 @@ public class VnPayService {
     private static final String PAY_COMMAND = "pay";
     private static final String VERSION = "2.1.0";
 
+    @Value("${vnpay.redirect.url}")
+    String vnPayRedirectUrl;
+
     public String generatePayUrl(int money) {
         try {
-            String vnp_Version = "2.1.0";
-            String vnp_Command = "pay";
+            String vnp_Version = VERSION;
+            String vnp_Command = PAY_COMMAND;
             String vnp_OrderInfo = "Thanh toan hoa don";
             String orderType = "other";
             String vnp_TxnRef = VnPayConfig.getRandomNumber(8);
@@ -48,7 +52,7 @@ public class VnPayService {
             } else {
                 vnp_Params.put("vnp_Locale", "vn");
             }
-            vnp_Params.put("vnp_ReturnUrl", VnPayConfig.vnp_ReturnUrl);
+            vnp_Params.put("vnp_ReturnUrl", vnPayRedirectUrl);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
             Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
 
