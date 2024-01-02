@@ -20,12 +20,13 @@ public class MediaRepositoryImpl implements MediaRepositoryCustom {
 
 
     @Override
-    public Page<Media> findAllMedia(String title, String type, Pageable pageable) {
+    public Page<Media> findAllMedia(String title, String type, Double fromPrice, Double toPrice, Pageable pageable) {
         StringBuilder jpql = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
 
         jpql.append(" select m.* from medias m ");
         jpql.append(" where 1 = 1 ");
+        jpql.append(" and m.price >= :fromPrice and m.price <= :toPrice ");
         if (Objects.nonNull(title)) {
             jpql.append(" and m.title like :title ");
             params.put("title", "%" + title + "%");
@@ -33,6 +34,16 @@ public class MediaRepositoryImpl implements MediaRepositoryCustom {
         if (Objects.nonNull(type)) {
             jpql.append(" and m.type = :type ");
             params.put("type", type);
+        }
+        if (Objects.nonNull(fromPrice)) {
+            params.put("fromPrice", fromPrice);
+        } else {
+            params.put("fromPrice", 999999999.00);
+        }
+        if (Objects.nonNull(toPrice)) {
+            params.put("toPrice", toPrice);
+        } else {
+            params.put("toPrice", 0.00);
         }
         Query selectQuery = entityManager.createNativeQuery(jpql.toString(), Media.class);
         if (!params.isEmpty()) {

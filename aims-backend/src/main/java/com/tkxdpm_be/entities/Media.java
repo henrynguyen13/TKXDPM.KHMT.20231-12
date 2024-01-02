@@ -1,12 +1,14 @@
 package com.tkxdpm_be.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "medias")
+@NoArgsConstructor
 public class Media {
 
     @Id
@@ -23,4 +25,8 @@ public class Media {
     private Double weight;
     private Boolean isRush;
     private String metaData;
+
+    public Media(Integer quantityAvailable) {
+        this.quantityAvailable = quantityAvailable;
+    }
 }

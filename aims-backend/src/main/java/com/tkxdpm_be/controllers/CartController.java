@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import model.BaseResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import utils.ApiException;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class CartController {
 
     @PostMapping("/{user-id}")
     public BaseResponse<Long> addMediaToCart(@PathVariable(name = "user-id") Long userId,
-                                             @RequestParam Long mediaId, @RequestParam Integer quantity) {
+                                             @RequestParam Long mediaId, @RequestParam Integer quantity) throws ApiException {
         System.out.println("mediaID" + mediaId);
         System.out.println("userId" + userId);
         BaseResponse<Long> response = new BaseResponse<>();

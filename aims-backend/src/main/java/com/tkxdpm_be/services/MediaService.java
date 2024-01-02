@@ -19,9 +19,9 @@ public class MediaService {
         this.mediaRepository = mediaRepository;
     }
 
-    public Page<Media> findAllMedia(String title, String type, Integer pageSize, Integer pageNumber) {
+    public Page<Media> findAllMedia(String title, String type, Double fromPrice, Double toPrice, Integer pageSize, Integer pageNumber) {
         Pageable pageable = PageRequest.of(pageNumber > 0 ? pageNumber - 1 : 0, pageSize);
-        return this.mediaRepository.findAllMedia(title, type, pageable);
+        return this.mediaRepository.findAllMedia(title, type, fromPrice, toPrice, pageable);
     }
 
     public Media findById(Long id) throws ApiException {
