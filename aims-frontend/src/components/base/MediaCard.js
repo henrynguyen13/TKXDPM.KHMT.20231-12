@@ -41,7 +41,12 @@ export default function MediaCard({ product }) {
                   },
                 }}
                 icon={<AiFillThunderbolt />}
-                label="30%"
+                label={
+                  (
+                    ((product.value - product.price) * 100) /
+                    product.value
+                  ).toFixed(0) + "%"
+                }
               />
             </span>
           </div>

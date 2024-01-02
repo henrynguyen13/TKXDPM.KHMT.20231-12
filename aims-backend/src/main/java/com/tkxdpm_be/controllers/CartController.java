@@ -21,6 +21,8 @@ public class CartController {
     @PostMapping("/{user-id}")
     public BaseResponse<Long> addMediaToCart(@PathVariable(name = "user-id") Long userId,
                                              @RequestParam Long mediaId, @RequestParam Integer quantity) {
+        System.out.println("mediaID" + mediaId);
+        System.out.println("userId" + userId);
         BaseResponse<Long> response = new BaseResponse<>();
         response.setData(this.cartService.addMediaToCart(userId, mediaId, quantity));
         return response;

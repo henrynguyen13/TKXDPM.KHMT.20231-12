@@ -6,6 +6,8 @@ import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Chip from "@mui/material/Chip";
+import { FaStar } from "react-icons/fa";
+import Button from "@mui/material/Button";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -14,15 +16,19 @@ export default function ProductDetailPage() {
     const getMediaDetail = async () => {
       try {
         const response = await ProductService.getMediaById(id);
+        const metaDataObject = JSON.parse(response?.data?.data?.metaData);
         console.log("response", response);
-        setProduct(response?.data?.data);
+        setProduct({
+          ...response?.data?.data,
+          metaData: metaDataObject,
+        });
       } catch (error) {
         console.error("Error fetching media:", error);
       }
     };
 
     getMediaDetail();
-  }, []);
+  }, [id]);
 
   const breadcrumbs = [
     <Link underline="hover" key="1" color="inherit" href="/">
@@ -33,6 +39,30 @@ export default function ProductDetailPage() {
     </Typography>,
   ];
 
+  const infoItems = [
+    { label: "Tác giả", key: "authors" },
+    { label: "Loại bìa", key: "coverType" },
+    { label: "Nhà xuất bản", key: "publisher" },
+    { label: "Ngày xuất bản", key: "publicationDate" },
+    { label: "Số trang", key: "pages" },
+    { label: "Ngôn ngữ", key: "language" },
+    { label: "Thể loại", key: "genre" },
+    { label: "Nghệ sĩ", key: "artists" },
+    { label: "Hãng ghi âm", key: "recordLabel" },
+    { label: "Danh sách bài hát", key: "trackList" },
+    { label: "Loại đĩa", key: "diskType" },
+    { label: "Đạo diễn", key: "director" },
+    { label: "Thời lượng", key: "runTime" },
+    { label: "Hãng sản xuất", key: "studio" },
+    { label: "Phụ đề", key: "subtitles" },
+  ];
+
+  const getDiscountValue = (value, price) => {
+    if (!value || !price) {
+      return 0;
+    }
+    return (((value - price) * 100) / product.value).toFixed(0);
+  };
   return (
     <div>
       <HeaderBar />
@@ -58,64 +88,57 @@ export default function ProductDetailPage() {
                 label={product?.type}
               />
             </div>
+            <div className="flex text-amber-500 mt-2">
+              <FaStar />
+              <FaStar />
+              <FaStar />
+              <FaStar />
+              <FaStar />
+            </div>
             <div className="flex  items-center mt-2">
               <div className="font-semibold text-2xl text-red-500 mr-3">
                 {" "}
-                ₫ {product.price}
+                ₫ {product?.price}
               </div>
-              <span className="font-medium  line-through">
-                ₫ {product.value}
+              <span className="font-medium  line-through mr-2">
+                ₫ {product?.value}
+              </span>
+              <span className="text-red-500 font-medium">
+                (Giảm {getDiscountValue(product?.value, product?.price)} % )
               </span>
             </div>
-            <div>Thông tin chi tiết</div>
-            {/* book */}
-            {product?.metaData?.authors ? (
-              <div>Tác giả: {product?.metaData?.authors} </div>
-            ) : null}
-            {product?.metaData?.authors ? (
-              <div>Loại bìa: {product?.metaData?.coverType} </div>
-            ) : null}
-            {product?.metaData?.publisher ? (
-              <div>Nhà xuất bản: {product?.metaData?.publisher} </div>
-            ) : null}
-            {product?.metaData?.publicationDate ? (
-              <div>Ngày xuất bản: {product?.metaData?.publicationDate} </div>
-            ) : null}
-            {product?.metaData?.pages ? (
-              <div>Số trang: {product?.metaData?.pages} </div>
-            ) : null}
-            {product?.metaData?.language ? (
-              <div>Ngôn ngữ: {product?.metaData?.language} </div>
-            ) : null}
-            {product?.metaData?.genre ? (
-              <div>Thể loại: {product?.metaData?.genre} </div>
-            ) : null}
-            {/* CD */}
-            {product?.metaData?.artists ? (
-              <div>Nghệ sĩ: {product?.metaData?.artists} </div>
-            ) : null}
-            {product?.metaData?.recordLabel ? (
-              <div>Hãng ghi âm: {product?.metaData?.recordLabel} </div>
-            ) : null}
-            {product?.metaData?.trackList ? (
-              <div>Danh sách bài hát: {product?.metaData?.trackList} </div>
-            ) : null}
-            {/* dvd */}
-            {product?.metaData?.diskType ? (
-              <div>Loại đĩa: {product?.metaData?.diskType} </div>
-            ) : null}
-            {product?.metaData?.director ? (
-              <div>Đạo diễn: {product?.metaData?.director} </div>
-            ) : null}
-            {product?.metaData?.runTime ? (
-              <div>Thời lượng: {product?.metaData?.runTime} </div>
-            ) : null}
-            {product?.metaData?.studio ? (
-              <div>Hãng sản xuất: {product?.metaData?.studio} </div>
-            ) : null}
-            {product?.metaData?.subtitles ? (
-              <div>Phụ đề: {product?.metaData?.subtitles} </div>
-            ) : null}
+            <div className="mt-3 text-xl font-semibold mb-3">
+              Thông tin chi tiết
+            </div>
+            <table className="table table-warning table-striped">
+              <thead>
+                <tr>
+                  <th>Thông tin</th>
+                  <th>Nội dung</th>
+                </tr>
+              </thead>
+              <tbody>
+                {infoItems.map(
+                  (item) =>
+                    product?.metaData?.[item.key] && (
+                      <tr key={item.key}>
+                        <td>{item.label}</td>
+                        <td>{product?.metaData?.[item.key]}</td>
+                      </tr>
+                    )
+                )}
+              </tbody>
+            </table>
+
+            <div className="mt-4">
+              <Button
+                size="large"
+                sx={{ textTransform: "capitalize" }}
+                variant="contained"
+              >
+                Thêm vào giỏ hàng
+              </Button>
+            </div>
           </div>
         </div>
       </div>
