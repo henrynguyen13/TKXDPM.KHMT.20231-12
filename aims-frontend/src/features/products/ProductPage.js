@@ -11,16 +11,26 @@ import { ProductService } from "../../services/products.service";
 export default function ProductPage() {
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(0);
-  const [category, setCategory] = useState("");
-  const [filter, setFilter] = useState("");
   const [products, setProducts] = useState([]);
-
-  const handleChangeCategory = (event: SelectChangeEvent) => {
+  const [category, setCategory] = useState("");
+  const handleChangeCategory = async (event: SelectChangeEvent) => {
     setCategory(event.target.value);
+
+    if (event.target.value === "") {
+      const response = await ProductService.getAllMedia(20, 1);
+      setProducts(response?.data?.data?.content);
+    } else {
+      const response = await ProductService.getAllMedia(
+        20,
+        1,
+        null,
+        event.target.value
+      );
+
+      setProducts(response?.data?.data?.content);
+    }
   };
-  const handleChangeFilter = (event: SelectChangeEvent) => {
-    setFilter(event.target.value);
-  };
+  const handleChangeFilter = (event: SelectChangeEvent) => {};
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage - 1);
   };
@@ -38,15 +48,6 @@ export default function ProductPage() {
     getMedia();
   }, []);
 
-  const filterProducts = category
-    ? products.filter((product) => product.type === category)
-    : filter
-    ? products.sort((a, b) =>
-        filter === "asc"
-          ? parseFloat(a.price) - parseFloat(b.price)
-          : parseFloat(b.price) - parseFloat(a.price)
-      )
-    : products;
   return (
     <>
       <div className="bg-[#ede5e5]">
@@ -71,7 +72,7 @@ export default function ProductPage() {
               </FormControl>
             </Box>
           </div>
-          <div>Danh sách sản phẩm ({filterProducts?.length})</div>
+          <div>Danh sách sản phẩm ({products?.length})</div>
           <div>
             <Box sx={{ minWidth: 200 }}>
               <FormControl fullWidth>
@@ -79,7 +80,7 @@ export default function ProductPage() {
                 <Select
                   labelId="filter"
                   id="filter"
-                  value={filter}
+                  value={""}
                   label="Sắp xếp theo"
                   onChange={handleChangeFilter}
                 >
@@ -90,21 +91,26 @@ export default function ProductPage() {
             </Box>
           </div>
         </div>
-        <div className="grid grid-cols-12 gap-4 ">
-          {filterProducts
-            ?.slice(
-              currentPage * itemsPerPage,
-              (currentPage + 1) * itemsPerPage
-            )
-            ?.map((product, index) => (
-              <div
-                key={product.id}
-                className="col-span-3 mx-auto my-0 min-w-[300px]"
-              >
-                <MediaCard product={product} />
-              </div>
-            ))}
-        </div>
+        {products.length ? (
+          <div className="grid grid-cols-12 gap-4 ">
+            {products
+              ?.slice(
+                currentPage * itemsPerPage,
+                (currentPage + 1) * itemsPerPage
+              )
+              ?.map((product, index) => (
+                <div
+                  key={product.id}
+                  className="col-span-3 mx-auto my-0 min-w-[300px]"
+                >
+                  <MediaCard product={product} />
+                </div>
+              ))}
+          </div>
+        ) : (
+          <div className="text-center">Không có sản phẩm nào</div>
+        )}
+
         <div className="flex justify-center py-6">
           <Pagination
             count={Math.ceil(products?.length ? products.length / 20 : 1)}
