@@ -7,6 +7,8 @@ import com.tkxdpm_be.repositories.CartItemRepository;
 import com.tkxdpm_be.repositories.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import utils.ApiException;
+import utils.ERROR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,11 +22,25 @@ public class CartService {
     private final CartItemRepository cartItemRepository;
     private final MediaRepository mediaRepository;
 
-    public Long addMediaToCart(Long userId, Long mediaId, Integer quantity) {
-        CartItem cartItem = new CartItem();
-        cartItem.setUserId(userId);
-        cartItem.setMediaId(mediaId);
-        cartItem.setQuantity(quantity);
+    public Long addMediaToCart(Long userId, Long mediaId, Integer quantity) throws ApiException {
+        // Check availabel quantity
+        Optional<Media> oMedia = this.mediaRepository.findById(mediaId);
+        Media media = oMedia.orElse(new Media(0));
+        if (quantity > media.getQuantityAvailable()) {
+            throw new ApiException(ERROR.INVALID_REQUEST, "Sản phẩm trong hệ thống không đủ");
+        }
+        // Check media exist in cart
+        Optional<CartItem> oCartItem = this.cartItemRepository.findByUserIdAndAndMediaId(userId, mediaId);
+        CartItem cartItem;
+        if (oCartItem.isPresent()) {
+            cartItem = oCartItem.get();
+            cartItem.setQuantity(oCartItem.get().getQuantity() + quantity);
+        } else {
+            cartItem = new CartItem();
+            cartItem.setUserId(userId);
+            cartItem.setMediaId(mediaId);
+            cartItem.setQuantity(quantity);
+        }
         cartItem = this.cartItemRepository.save(cartItem);
         return cartItem.getCartItemId();
     }

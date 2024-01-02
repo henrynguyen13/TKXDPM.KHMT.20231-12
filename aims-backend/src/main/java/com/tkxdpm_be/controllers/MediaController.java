@@ -20,10 +20,12 @@ public class MediaController {
 
     @GetMapping
     public BaseResponse<Page<Media>> findAllMedia(@RequestParam(required = false) String title,
-                                                 @RequestParam(required = false) String type,
-                                                 @RequestParam Integer pageSize, @RequestParam Integer pageNumber) {
+                                                  @RequestParam(required = false) String type,
+                                                  @RequestParam(required = false) Double fromPrice,
+                                                  @RequestParam(required = false) Double toPrice,
+                                                  @RequestParam Integer pageSize, @RequestParam Integer pageNumber) {
         BaseResponse<Page<Media>> response = new BaseResponse<>();
-        response.setData(this.mediaService.findAllMedia(title, type, pageSize, pageNumber));
+        response.setData(this.mediaService.findAllMedia(title, type, fromPrice, toPrice, pageSize, pageNumber));
         return response;
     }
 
