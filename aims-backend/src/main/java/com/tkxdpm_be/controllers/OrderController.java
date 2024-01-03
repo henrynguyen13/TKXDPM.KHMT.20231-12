@@ -29,4 +29,12 @@ public class OrderController {
         response.setData(this.orderService.createOrder(request));
         return response;
     }
+
+    @PostMapping("/get-shipping-fee")
+    public BaseResponse<Double> getShippingFee(@RequestBody OrderRequest request,
+                                             @RequestParam boolean isRush) {
+        BaseResponse<Double> response = new BaseResponse<>();
+        response.setData(this.orderService.getShippingFee(request.getMedias(), request.getOrderShipping().getCity(), isRush));
+        return response;
+    }
 }
