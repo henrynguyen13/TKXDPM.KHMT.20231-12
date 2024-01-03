@@ -1,12 +1,14 @@
 package com.tkxdpm_be.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "medias")
+@NoArgsConstructor
 public class Media {
 
     @Id
@@ -17,6 +19,14 @@ public class Media {
     private String author;
     private String imageUrl;
     private String description;
-    private double price;
-    private int quantityAvailable;
+    private Double value;
+    private Double price;
+    private Integer quantityAvailable;
+    private Double weight;
+    private Boolean isRush;
+    private String metaData;
+
+    public Media(Integer quantityAvailable) {
+        this.quantityAvailable = quantityAvailable;
+    }
 }

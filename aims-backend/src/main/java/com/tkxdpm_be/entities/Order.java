@@ -13,6 +13,9 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long userId;
-    private double totalAmount;
-    private String shippingAddress;
+    private Double totalAmount;
+    private Long orderShippingId;
+    private Double originPrice;
+    private Double vat;
+    private Double shippingFee;
 }
