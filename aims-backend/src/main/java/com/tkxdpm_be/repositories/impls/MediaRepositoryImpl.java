@@ -38,12 +38,12 @@ public class MediaRepositoryImpl implements MediaRepositoryCustom {
         if (Objects.nonNull(fromPrice)) {
             params.put("fromPrice", fromPrice);
         } else {
-            params.put("fromPrice", 999999999.00);
+            params.put("fromPrice", 0.00);
         }
         if (Objects.nonNull(toPrice)) {
             params.put("toPrice", toPrice);
         } else {
-            params.put("toPrice", 0.00);
+            params.put("toPrice", 999999999.00);
         }
         Query selectQuery = entityManager.createNativeQuery(jpql.toString(), Media.class);
         if (!params.isEmpty()) {
