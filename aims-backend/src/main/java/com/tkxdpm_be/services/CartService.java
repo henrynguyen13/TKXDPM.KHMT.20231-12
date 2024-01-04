@@ -60,6 +60,7 @@ public class CartService {
                 cartItemDto.setPrice(mediaInfo.getPrice());
                 cartItemDto.setQuantityAvailable(mediaInfo.getQuantityAvailable());
                 cartItemDto.setQuantity(item.getQuantity());
+                cartItemDto.setWeight(mediaInfo.getWeight());
                 responseListCartMedia.add(cartItemDto);
             });
         });
