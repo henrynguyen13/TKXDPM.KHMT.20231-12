@@ -1,11 +1,14 @@
 package com.tkxdpm_be.controllers;
 
 import com.tkxdpm_be.models.requests.OrderRequest;
+import com.tkxdpm_be.models.responses.OrderResponse;
 import com.tkxdpm_be.services.OrderService;
 import com.tkxdpm_be.services.VnPayService;
 import model.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(allowedHeaders = "*", origins = "*")
@@ -35,6 +38,13 @@ public class OrderController {
                                                 @RequestParam boolean isRush) {
         BaseResponse<Double> response = new BaseResponse<>();
         response.setData(this.orderService.getShippingFee(request.getMedias(), request.getOrderShipping().getCity(), isRush));
+        return response;
+    }
+
+    @GetMapping("/history/{user-id}")
+    public BaseResponse<List<OrderResponse>> getHistoryOrder(@PathVariable(name = "user-id") Long userId) {
+        BaseResponse<List<OrderResponse>> response = new BaseResponse<>();
+        response.setData(this.orderService.getHistoryOrder(userId));
         return response;
     }
 }
