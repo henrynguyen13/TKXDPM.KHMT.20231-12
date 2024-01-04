@@ -125,9 +125,9 @@ public class VnPayService {
         }
     }
 
-    public PaymentTransaction makePaymentTransaction(Map<String, String> response) throws ApiException {
+    public void makePaymentTransaction(Map<String, String> response) throws ApiException {
         if (response == null) {
-            return null;
+            return;
         }
 
         // Create Payment transaction
@@ -160,6 +160,5 @@ public class VnPayService {
                 throw new ApiException(ERROR.INVALID_REQUEST, "Lỗi không xác định");
         }
 
-        return trans;
     }
 }

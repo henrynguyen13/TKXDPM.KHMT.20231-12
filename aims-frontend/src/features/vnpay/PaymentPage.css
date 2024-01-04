@@ -1,0 +1,8 @@
+.payment-page {
+    margin: 30px 50px;
+    box-sizing: border-box;
+}
+.payment-page .name-page {
+    font-size: 30px;
+    font-weight: bold;
+}
