@@ -12,6 +12,7 @@ export default function DeliveryPage() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm();
 
@@ -19,16 +20,20 @@ export default function DeliveryPage() {
   console.log(errors);
 
   const handleCityChange = async (selectedCity) => {
-    const request = {
-      orderShipping: {
-        city: register("city").value,
-      },
-      medias: listMedia,
-      userId: "1",
-    };
-    console.log("request", request);
     try {
-      const response = await OrderService.calculateShippingFee(request, true);
+      const res = {
+        orderShipping: {
+          city: getValues("city"),
+        },
+        medias: listMedia,
+        userId: "1",
+      };
+      console.log("request", res);
+      const response = await OrderService.calculateShippingFee(
+        getValues("city"),
+        listMedia,
+        true
+      );
       console.log("respone", response);
       setShippingFee(response.data.shippingFee);
     } catch (error) {
