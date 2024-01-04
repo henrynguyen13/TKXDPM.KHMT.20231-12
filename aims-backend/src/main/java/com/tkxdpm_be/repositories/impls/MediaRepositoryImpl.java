@@ -20,7 +20,7 @@ public class MediaRepositoryImpl implements MediaRepositoryCustom {
 
 
     @Override
-    public Page<Media> findAllMedia(String title, String type, Double fromPrice, Double toPrice, Pageable pageable) {
+    public Page<Media> findAllMedia(String title, String type, Double fromPrice, Double toPrice, String sort, Pageable pageable) {
         StringBuilder jpql = new StringBuilder();
         Map<String, Object> params = new HashMap<>();
 
@@ -44,6 +44,9 @@ public class MediaRepositoryImpl implements MediaRepositoryCustom {
             params.put("toPrice", toPrice);
         } else {
             params.put("toPrice", 999999999.00);
+        }
+        if (sort.equals("desc")) {
+            jpql.append(" order by m.price desc ");
         }
         Query selectQuery = entityManager.createNativeQuery(jpql.toString(), Media.class);
         if (!params.isEmpty()) {
