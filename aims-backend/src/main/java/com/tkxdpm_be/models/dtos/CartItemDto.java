@@ -15,4 +15,5 @@ public class CartItemDto {
     private Double price;
     private Integer quantityAvailable;
     private Integer quantity;
+    private Double weight;
 }
