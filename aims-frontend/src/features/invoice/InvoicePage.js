@@ -6,6 +6,9 @@ import Button from '@mui/material/Button';
 import book1 from "../../assets/images/book1.jpg";
 import book2 from "../../assets/images/book2.jpg";
 import book3 from "../../assets/images/book3.jpg";
+import { PaymentService } from '../../services/payment.service';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const customerInfo = {
   name: 'John Doe',
@@ -45,6 +48,24 @@ const InvoicePage = () => {
   const subtotal = productInfo.reduce((totals, product) => totals + product.unitprice * product.quantity, 0);
   const shippingFees = 0.1 * subtotal;
   const total = subtotal + shippingFees;
+
+  const navigate = useNavigate();
+
+  const [urlPayment, setUrlPayment] = useState('');
+    const totalPrice = 1000000;
+
+    const getUrlPayment = async () => {
+        try {
+          const response = await PaymentService.getPayUrl(totalPrice);
+          setUrlPayment(response.data.data);
+        } catch (err) {
+          console.error("Error:", err);
+        }
+    };
+
+    useEffect(() => {
+        getUrlPayment();
+    }, [])
 
 
   return (
@@ -106,7 +127,7 @@ const InvoicePage = () => {
       </Box>
 
       <Box display="flex" justifyContent="center">
-        <Button sx={{ backgroundColor: 'blue', color: 'white' }}>
+        <Button onClick={() => { if (urlPayment !== '') window.location.assign(`${urlPayment}`) }} sx={{ backgroundColor: 'blue', color: 'white' }}>
           <Typography>Confirm order</Typography>
         </Button>
       </Box>

@@ -18,8 +18,8 @@ public class VnPayConfig {
     private static final Pattern pattern = Pattern.compile("\\{\"IP\":\"(?<ip>.*)\"\\}");
     public static String vnp_PayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     public static String vnp_ReturnUrl = "https://cardoctor-homepage.aggregatoricapaci.com";
-    public static String vnp_TmnCode = "ORRJM9BG";
-    public static String secretKey = "IXGFEGJRHNESWTQMSJOUEMDCUTJNOVME";
+    public static String vnp_TmnCode = "QPUTL42T";
+    public static String secretKey = "WZSLOTUHFUYABANLHTKZOKBLIBDZOIQD";
     public static String vnp_ApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String md5(String message) {
