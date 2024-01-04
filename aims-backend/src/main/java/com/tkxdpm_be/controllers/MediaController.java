@@ -23,9 +23,10 @@ public class MediaController {
                                                   @RequestParam(required = false) String type,
                                                   @RequestParam(required = false) Double fromPrice,
                                                   @RequestParam(required = false) Double toPrice,
+                                                  @RequestParam(required = false, defaultValue = "asc") String sort,
                                                   @RequestParam Integer pageSize, @RequestParam Integer pageNumber) {
         BaseResponse<Page<Media>> response = new BaseResponse<>();
-        response.setData(this.mediaService.findAllMedia(title, type, fromPrice, toPrice, pageSize, pageNumber));
+        response.setData(this.mediaService.findAllMedia(title, type, fromPrice, toPrice, sort, pageSize, pageNumber));
         return response;
     }
 
