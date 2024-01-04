@@ -196,8 +196,8 @@ const CartPage = () => {
                 <div>{formatNumber(subtotal)}đ</div>
               </div>
               <div className="cost-item">
-                <div>VAT</div>
-                <div>10%</div>
+                <div>VAT(10%)</div>
+                <div>{formatNumber((subtotal * 10) / 100)}đ</div>
               </div>
               <div className="cost-item">
                 <div>Tổng tiền</div>

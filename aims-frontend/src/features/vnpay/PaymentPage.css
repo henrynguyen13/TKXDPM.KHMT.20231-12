@@ -1,0 +1,13 @@
+.payment-page {
+    margin: 30px 50px;
+    box-sizing: border-box;
+}
+.payment-page .name-page {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+.payment-page .payment-container {
+    display: flex;
+    justify-content: center;
+}

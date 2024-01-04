@@ -5,12 +5,39 @@ import { useState } from "react";
 import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
+<<<<<<< HEAD
+=======
 import { useNavigate } from "react-router-dom";
 
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
 export default function DeliveryPage() {
   const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   const [shippingFee, setShippingFee] = useState(0);
+<<<<<<< HEAD
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => console.log(data);
+  console.log(errors);
+
+  const handleCityChange = async (selectedCity) => {
+    const request = {
+      orderShipping: {
+        city: register("city").value,
+      },
+      medias: listMedia,
+      userId: "1",
+    };
+    console.log("request", request);
+    try {
+      const response = await OrderService.calculateShippingFee(request, true);
+      console.log("respone", response);
+      setShippingFee(response.data.shippingFee);
+=======
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const navigate = useNavigate();
   const {
@@ -63,11 +90,21 @@ export default function DeliveryPage() {
       const response = await OrderService.calculateShippingFee(res, true);
       console.log("respone", response);
       setShippingFee(response.data.data);
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
     } catch (error) {
       console.error("Error calculating shipping fee:", error);
     }
   };
 
+<<<<<<< HEAD
+  // useEffect(() => {
+  //   // This useEffect will only run when the "city" field changes
+  //   const selectedCity = register("city").value;
+  //   handleCityChange(selectedCity);
+  // }, [register]);
+
+=======
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
   return (
     <>
       <HeaderBar />
@@ -89,6 +126,11 @@ export default function DeliveryPage() {
                   type="text"
                   id="name"
                   placeholder="Họ và tên"
+<<<<<<< HEAD
+                  {...register("name", { required: true, maxLength: 80 })}
+                />
+              </div>
+=======
                   {...register("name", {
                     required: {
                       value: true,
@@ -100,6 +142,7 @@ export default function DeliveryPage() {
               <div className="ml-[255px] text-[#d04242] mb-2">
                 {errors?.name?.message}
               </div>
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="phone">
                   Số điện thoại:
@@ -109,6 +152,13 @@ export default function DeliveryPage() {
                   id="phone"
                   placeholder="Số điện thoại"
                   {...register("phone", {
+<<<<<<< HEAD
+                    required: true,
+                    maxLength: 10,
+                  })}
+                />
+              </div>
+=======
                     required: {
                       value: true,
                       message: "Số điện thoại là trường bắt buộc",
@@ -123,6 +173,7 @@ export default function DeliveryPage() {
               <div className="ml-[255px] text-[#d04242] mb-2">
                 {errors?.phone?.message}
               </div>
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
 
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="city">
@@ -130,7 +181,10 @@ export default function DeliveryPage() {
                 </label>
                 <select
                   id="city"
+<<<<<<< HEAD
+=======
                   name="city"
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
                   {...register("city", { required: true })}
                   onChange={(e) => {
                     handleCityChange(e.target.value);
@@ -199,13 +253,21 @@ export default function DeliveryPage() {
                   <option value="Yên Bái">Yên Bái</option>
                 </select>
               </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="address">
                   Địa chỉ:
                 </label>
                 <textarea
                   placeholder="Địa chỉ"
+<<<<<<< HEAD
+                  {...register("Địa chỉ", { required: true, maxLength: 255 })}
+                />
+              </div>
+=======
                   {...register("address", {
                     required: {
                       value: true,
@@ -217,6 +279,7 @@ export default function DeliveryPage() {
               <div className="ml-[255px] text-[#d04242] mb-2">
                 {errors?.address?.message}
               </div>
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="shippingInstruction">
                   Chỉ dẫn giao hàng:
@@ -226,12 +289,23 @@ export default function DeliveryPage() {
                   {...register("shippingInstruction", { maxLength: 255 })}
                 />
               </div>
+<<<<<<< HEAD
+              <div className="flex items-center">
+=======
 
               <div className="flex items-center mt-2">
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
                 <label className="min-w-[250px]">Phương thức giao hàng:</label>
                 <div className="flex items-center">
                   <input
                     type="radio"
+<<<<<<< HEAD
+                    id="standardDelivery"
+                    {...register("shippingMethod", {
+                      value: "Giao hàng tiêu chuẩn",
+                    })}
+                    onClick={() => setIsExpressDelivery(false)}
+=======
                     name="shippingMethod"
                     id="standardDelivery"
                     value="Giao hàng tiêu chuẩn"
@@ -240,6 +314,7 @@ export default function DeliveryPage() {
                       setIsExpressDelivery(false);
                       setSelectedShippingMethod("Giao hàng tiêu chuẩn");
                     }}
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
                   />
                   <label className="min-w-[250px]" htmlFor="standardDelivery">
                     Giao hàng tiêu chuẩn
@@ -248,6 +323,13 @@ export default function DeliveryPage() {
                 <div className="flex items-center">
                   <input
                     type="radio"
+<<<<<<< HEAD
+                    id="expressDelivery"
+                    {...register("shippingMethod", {
+                      value: "Giao hàng nhanh",
+                    })}
+                    onClick={() => setIsExpressDelivery(true)}
+=======
                     name="shippingMethod"
                     id="expressDelivery"
                     value="Giao hàng nhanh"
@@ -256,6 +338,7 @@ export default function DeliveryPage() {
                       setIsExpressDelivery(true);
                       setSelectedShippingMethod("Giao hàng nhanh");
                     }}
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
                   />
                   <label className="min-w-[250px]" htmlFor="expressDelivery">
                     Giao hàng nhanh
@@ -273,7 +356,10 @@ export default function DeliveryPage() {
                       {...register("shipmentDetails", { maxLength: 255 })}
                     />
                   </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
                   <div className="flex items-center">
                     <label
                       className="min-w-[250px]"
@@ -300,7 +386,11 @@ export default function DeliveryPage() {
                 </>
               )}
 
+<<<<<<< HEAD
+              <div>
+=======
               <div className="flex justify-end mt-10">
+>>>>>>> 09325348f535b6355208aeb8fab352e523ba085f
                 <input type="submit" value="Đặt hàng" />
               </div>
             </form>
