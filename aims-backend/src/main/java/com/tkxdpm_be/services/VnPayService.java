@@ -104,11 +104,11 @@ public class VnPayService {
                     //Build hash data
                     hashData.append(fieldName);
                     hashData.append('=');
-                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                    hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                     //Build query
-                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII.toString()));
+                    query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
                     query.append('=');
-                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString()));
+                    query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
                     if (itr.hasNext()) {
                         query.append('&');
                         hashData.append('&');
@@ -134,7 +134,7 @@ public class VnPayService {
         String errorCode = response.get("vnp_TransactionStatus");
         String transactionId = response.get("vnp_TransactionNo");
         String transactionContent = response.get("vnp_OrderInfo");
-        int amount = Integer.parseInt(response.get("vnp_Amount")) / 100;
+        int amount = Integer.parseInt(response.get("vnp_Amount"));
         String createdAt = response.get("vnp_PayDate");
         PaymentTransaction trans = new
                 PaymentTransaction(errorCode, transactionId, transactionContent, amount, createdAt);
@@ -145,7 +145,7 @@ public class VnPayService {
             case "01":
                 throw new ApiException(ERROR.INVALID_REQUEST, "Giao dịch không hoàn thành");
             case "02":
-                throw new ApiException(ERROR.INVALID_REQUEST, "Giao dịch không hoàn thành");
+                throw new ApiException(ERROR.INVALID_REQUEST, "Giao dịch thất bại");
             case "04":
                 throw new ApiException(ERROR.INVALID_REQUEST, "Hoàn tác giao dịch");
             case "05":

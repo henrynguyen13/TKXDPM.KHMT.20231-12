@@ -47,6 +47,11 @@ public class CartController {
         cartService.deleteItemInCart(cartItemId);
     }
 
+    @DeleteMapping("/deleteAll/{userId}")
+    public void deleteAllItemInCart(@PathVariable(name = "userId") Long userId) {
+        cartService.deleteAllItemInCart(userId);
+    }
+
     @GetMapping("/numProduct/{user-id}")
     public ResponseEntity<Integer> getNumMediaInCart(@PathVariable(name = "user-id") Long userId) {
         Integer numMediaInCart = cartService.getNumMediaInCart(userId);

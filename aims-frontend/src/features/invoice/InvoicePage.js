@@ -8,7 +8,6 @@ import book2 from "../../assets/images/book2.jpg";
 import book3 from "../../assets/images/book3.jpg";
 import { PaymentService } from '../../services/payment.service';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const customerInfo = {
   name: 'John Doe',
@@ -49,24 +48,21 @@ const InvoicePage = () => {
   const shippingFees = 0.1 * subtotal;
   const total = subtotal + shippingFees;
 
-  const navigate = useNavigate();
-
   const [urlPayment, setUrlPayment] = useState('');
-    const totalPrice = 1000000;
+  const totalPrice = 1000000;
 
-    const getUrlPayment = async () => {
-        try {
-          const response = await PaymentService.getPayUrl(totalPrice);
-          setUrlPayment(response.data.data);
-        } catch (err) {
-          console.error("Error:", err);
-        }
-    };
+  const getUrlPayment = async () => {
+      try {
+        const response = await PaymentService.getPayUrl(totalPrice);
+        setUrlPayment(response.data.data);
+      } catch (err) {
+        console.error("Error:", err);
+      }
+  };
 
-    useEffect(() => {
-        getUrlPayment();
-    }, [])
-
+  useEffect(() => {
+      getUrlPayment();
+  }, [])
 
   return (
     <div>
