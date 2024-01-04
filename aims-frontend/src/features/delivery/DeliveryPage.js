@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import HeaderBar from "../../components/layout/HeaderBar";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useCart } from "../carts/CartContext";
+import { formatNumber } from "../../common/utils";
+import { OrderService } from "../../services/order.service";
 export default function DeliveryPage() {
+  const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
+  const [shippingFee, setShippingFee] = useState(0);
   const {
     register,
     handleSubmit,
@@ -13,15 +18,30 @@ export default function DeliveryPage() {
   const onSubmit = (data) => console.log(data);
   console.log(errors);
 
-  const handleChangeExpress = () => {
-    setIsExpressDelivery(true);
-    console.log(isExpressDelivery);
+  const handleCityChange = async (selectedCity) => {
+    const request = {
+      orderShipping: {
+        city: register("city").value,
+      },
+      medias: listMedia,
+      userId: "1",
+    };
+    console.log("request", request);
+    try {
+      const response = await OrderService.calculateShippingFee(request, true);
+      console.log("respone", response);
+      setShippingFee(response.data.shippingFee);
+    } catch (error) {
+      console.error("Error calculating shipping fee:", error);
+    }
   };
 
-  const handleChangeStandard = () => {
-    setIsExpressDelivery(false);
-    console.log(isExpressDelivery);
-  };
+  // useEffect(() => {
+  //   // This useEffect will only run when the "city" field changes
+  //   const selectedCity = register("city").value;
+  //   handleCityChange(selectedCity);
+  // }, [register]);
+
   return (
     <>
       <HeaderBar />
@@ -36,25 +56,25 @@ export default function DeliveryPage() {
                 Thông tin giao hàng
               </div>
               <div className="flex items-center">
-                <label className="min-w-[250px]" htmlFor="fullName">
+                <label className="min-w-[250px]" htmlFor="name">
                   Họ và tên:
                 </label>
                 <input
                   type="text"
-                  id="fullName"
+                  id="name"
                   placeholder="Họ và tên"
-                  {...register("fullName", { required: true, maxLength: 80 })}
+                  {...register("name", { required: true, maxLength: 80 })}
                 />
               </div>
               <div className="flex items-center">
-                <label className="min-w-[250px]" htmlFor="phoneNumber">
+                <label className="min-w-[250px]" htmlFor="phone">
                   Số điện thoại:
                 </label>
                 <input
                   type="tel"
-                  id="phoneNumber"
+                  id="phone"
                   placeholder="Số điện thoại"
-                  {...register("phoneNumber", {
+                  {...register("phone", {
                     required: true,
                     maxLength: 10,
                   })}
@@ -65,7 +85,13 @@ export default function DeliveryPage() {
                 <label className="min-w-[250px]" htmlFor="city">
                   Tỉnh/Thành phố:
                 </label>
-                <select id="city" {...register("city", { required: true })}>
+                <select
+                  id="city"
+                  {...register("city", { required: true })}
+                  onChange={(e) => {
+                    handleCityChange(e.target.value);
+                  }}
+                >
                   <option value="An Giang">An Giang</option>
                   <option value="Bà Rịa - Vũng Tàu">Bà Rịa - Vũng Tàu</option>
                   <option value="Bắc Giang">Bắc Giang</option>
@@ -139,12 +165,12 @@ export default function DeliveryPage() {
                 />
               </div>
               <div className="flex items-center">
-                <label className="min-w-[250px]" htmlFor="deliveryInstructions">
+                <label className="min-w-[250px]" htmlFor="shippingInstruction">
                   Chỉ dẫn giao hàng:
                 </label>
                 <textarea
                   placeholder="Chỉ dẫn giao hàng"
-                  {...register("deliveryInstructions", { maxLength: 255 })}
+                  {...register("shippingInstruction", { maxLength: 255 })}
                 />
               </div>
               <div className="flex items-center">
@@ -153,11 +179,10 @@ export default function DeliveryPage() {
                   <input
                     type="radio"
                     id="standardDelivery"
-                    {...register("deliveryMethod", {
+                    {...register("shippingMethod", {
                       value: "Giao hàng tiêu chuẩn",
                     })}
-                    checked={!isExpressDelivery}
-                    onChange={() => setIsExpressDelivery(false)}
+                    onClick={() => setIsExpressDelivery(false)}
                   />
                   <label className="min-w-[250px]" htmlFor="standardDelivery">
                     Giao hàng tiêu chuẩn
@@ -167,41 +192,37 @@ export default function DeliveryPage() {
                   <input
                     type="radio"
                     id="expressDelivery"
-                    {...register("deliveryMethod", {
+                    {...register("shippingMethod", {
                       value: "Giao hàng nhanh",
                     })}
-                    checked={isExpressDelivery}
-                    onChange={() => setIsExpressDelivery(true)}
+                    onClick={() => setIsExpressDelivery(true)}
                   />
                   <label className="min-w-[250px]" htmlFor="expressDelivery">
                     Giao hàng nhanh
                   </label>
                 </div>
               </div>
-              {isExpressDelivery ? (
+              {isExpressDelivery && (
                 <>
                   <div className="flex items-center">
-                    <label
-                      className="min-w-[250px]"
-                      htmlFor="expressDeliveryInfo"
-                    >
+                    <label className="min-w-[250px]" htmlFor="shipmentDetails">
                       Thông tin giao hàng nhanh:
                     </label>
                     <textarea
                       placeholder="Thông tin giao hàng nhanh"
-                      {...register("expressDeliveryInfo", { maxLength: 255 })}
+                      {...register("shipmentDetails", { maxLength: 255 })}
                     />
                   </div>
                   <div className="flex items-center">
                     <label
                       className="min-w-[250px]"
-                      htmlFor="expressDeliveryInstructions"
+                      htmlFor="deliveryInstruction"
                     >
                       Chỉ dẫn giao hàng nhanh:
                     </label>
                     <textarea
                       placeholder="Chỉ dẫn giao hàng nhanh"
-                      {...register("expressDeliveryInstructions", {})}
+                      {...register("deliveryInstruction", {})}
                     />
                   </div>
                   <div className="flex items-center">
@@ -216,7 +237,7 @@ export default function DeliveryPage() {
                     />
                   </div>
                 </>
-              ) : null}
+              )}
 
               <div>
                 <input type="submit" value="Đặt hàng" />
@@ -233,20 +254,20 @@ export default function DeliveryPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td>Tổng giá cả</td>
-                  <td>100000</td>
+                  <td>Tổng giá cả </td>
+                  <td>{formatNumber(subtotal)}đ</td>
                 </tr>
                 <tr>
                   <td>VAT(10%)</td>
-                  <td>100000</td>
+                  <td>{formatNumber((subtotal * 10) / 100)}đ</td>
                 </tr>
                 <tr>
                   <td>Phí vận chuyển</td>
-                  <td>100000</td>
+                  <td>{shippingFee}đ</td>
                 </tr>
                 <tr>
                   <td>Tổng tiền</td>
-                  <td>100000</td>
+                  <td>{formatNumber(subtotal * 1.1 + shippingFee)}đ</td>
                 </tr>
               </tbody>
             </table>

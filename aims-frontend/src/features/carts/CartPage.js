@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { CartService } from "../../services/cart.service";
 import { useNumProduct } from "./NumProductInCartContext";
 import { useNavigate } from "react-router-dom";
+import { formatNumber } from "../../common/utils";
 const CartPage = () => {
   const navigate = useNavigate();
 
@@ -109,13 +110,6 @@ const CartPage = () => {
     } catch (err) {
       console.error("Error:", err);
     }
-  };
-
-  const formatNumber = (number) => {
-    if (typeof number === "number") {
-      return number.toLocaleString("vi-VN");
-    }
-    return "";
   };
 
   return (

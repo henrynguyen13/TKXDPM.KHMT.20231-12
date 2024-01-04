@@ -4,19 +4,21 @@ import DeliveryPage from "./features/delivery/DeliveryPage";
 import ProductDetailPage from "./features/products/ProductDetailPage";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { NumProductProvider } from "./features/carts/NumProductInCartContext";
-
+import { CartProvider } from "./features/carts/CartContext";
 export default function App() {
   return (
     <>
       <NumProductProvider>
-        <Router>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/products/:id" element={<ProductDetailPage />} />
-            <Route path="/cart" element={<CartPage />} />
-            <Route path="/delivery" element={<DeliveryPage />} />
-          </Routes>
-        </Router>
+        <CartProvider>
+          <Router>
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/delivery" element={<DeliveryPage />} />
+            </Routes>
+          </Router>
+        </CartProvider>
       </NumProductProvider>
     </>
   );

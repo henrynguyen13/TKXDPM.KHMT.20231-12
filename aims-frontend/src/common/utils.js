@@ -44,3 +44,10 @@ class ToastUtil {
 }
 
 export default ToastUtil;
+
+export const formatNumber = (number) => {
+  if (typeof number === "number") {
+    return number.toLocaleString("vi-VN");
+  }
+  return "";
+};
