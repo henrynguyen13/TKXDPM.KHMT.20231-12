@@ -61,6 +61,7 @@ public class OrderService {
 
     public Double getShippingFee(List<MediaRequest> medias, String city, boolean isRush) {
         Double totalPrice = 0d;
+        Double shippingFeePrice = 0d;
         Double maxWeight = 0d;
         int quantity = medias.size();
         for (MediaRequest media : medias) {
@@ -70,14 +71,15 @@ public class OrderService {
             }
         }
         if (totalPrice > 100000) {
-            return totalPrice;
+            return  0d;
+
         } else {
             boolean isCenter = city.equals("Hà Nội") || city.equals("TP Hồ Chí Minh");
             double baseFee = isCenter ? 22000d : 30000d;
             double weightFee = (maxWeight < 3) ? baseFee : (baseFee + (maxWeight - 3) / 0.5 * 2500);
-            totalPrice += weightFee;
-            totalPrice += isRush ? quantity * 10000 : 0;
-            return totalPrice;
+            shippingFeePrice += weightFee;
+            shippingFeePrice += isRush ? quantity * 10000 : 0;
+            return shippingFeePrice;
         }
     }
 }

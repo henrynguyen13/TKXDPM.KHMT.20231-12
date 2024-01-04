@@ -5,10 +5,14 @@ import { useState } from "react";
 import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
+import { useNavigate } from "react-router-dom";
+
 export default function DeliveryPage() {
   const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   const [shippingFee, setShippingFee] = useState(0);
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -16,36 +20,53 @@ export default function DeliveryPage() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async (data) => {
+    console.log(data);
+    try {
+      const request = {
+        orderShipping: {
+          name: data?.name ?? "",
+          phone: data?.phone ?? "",
+          city: data?.city ?? "",
+          address: data?.address ?? "",
+          shippingInstruction: data?.shippingInstruction ?? "",
+          shippingMethod: selectedShippingMethod,
+          shipmentDetails: data?.shipmentDetails ?? "",
+          deliveryInstruction: data?.deliveryInstruction ?? "",
+          deliveryTime: data?.deliveryTime ?? "",
+        },
+        medias: listMedia,
+        shippingFee: shippingFee,
+        userId: "1",
+      };
+      const response = await OrderService.createOrder(request);
+      console.log("---------", response);
+      if (response?.data?.data === "Success") {
+        navigate("/invoice");
+      }
+    } catch (error) {
+      console.error("Error create order:", error);
+    }
+  };
   console.log(errors);
 
   const handleCityChange = async (selectedCity) => {
     try {
       const res = {
         orderShipping: {
-          city: getValues("city"),
+          city: selectedCity,
         },
         medias: listMedia,
         userId: "1",
       };
       console.log("request", res);
-      const response = await OrderService.calculateShippingFee(
-        getValues("city"),
-        listMedia,
-        true
-      );
+      const response = await OrderService.calculateShippingFee(res, true);
       console.log("respone", response);
-      setShippingFee(response.data.shippingFee);
+      setShippingFee(response.data.data);
     } catch (error) {
       console.error("Error calculating shipping fee:", error);
     }
   };
-
-  // useEffect(() => {
-  //   // This useEffect will only run when the "city" field changes
-  //   const selectedCity = register("city").value;
-  //   handleCityChange(selectedCity);
-  // }, [register]);
 
   return (
     <>
@@ -68,8 +89,16 @@ export default function DeliveryPage() {
                   type="text"
                   id="name"
                   placeholder="Họ và tên"
-                  {...register("name", { required: true, maxLength: 80 })}
+                  {...register("name", {
+                    required: {
+                      value: true,
+                      message: "Họ và tên là trường bắt buộc",
+                    },
+                  })}
                 />
+              </div>
+              <div className="ml-[255px] text-[#d04242] mb-2">
+                {errors?.name?.message}
               </div>
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="phone">
@@ -80,10 +109,19 @@ export default function DeliveryPage() {
                   id="phone"
                   placeholder="Số điện thoại"
                   {...register("phone", {
-                    required: true,
-                    maxLength: 10,
+                    required: {
+                      value: true,
+                      message: "Số điện thoại là trường bắt buộc",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "Số điện thoại có tối đa 10 chữ số",
+                    },
                   })}
                 />
+              </div>
+              <div className="ml-[255px] text-[#d04242] mb-2">
+                {errors?.phone?.message}
               </div>
 
               <div className="flex items-center">
@@ -92,6 +130,7 @@ export default function DeliveryPage() {
                 </label>
                 <select
                   id="city"
+                  name="city"
                   {...register("city", { required: true })}
                   onChange={(e) => {
                     handleCityChange(e.target.value);
@@ -160,14 +199,23 @@ export default function DeliveryPage() {
                   <option value="Yên Bái">Yên Bái</option>
                 </select>
               </div>
+
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="address">
                   Địa chỉ:
                 </label>
                 <textarea
                   placeholder="Địa chỉ"
-                  {...register("Địa chỉ", { required: true, maxLength: 255 })}
+                  {...register("address", {
+                    required: {
+                      value: true,
+                      message: "Địa chỉ là trường bắt buộc",
+                    },
+                  })}
                 />
+              </div>
+              <div className="ml-[255px] text-[#d04242] mb-2">
+                {errors?.address?.message}
               </div>
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="shippingInstruction">
@@ -178,16 +226,20 @@ export default function DeliveryPage() {
                   {...register("shippingInstruction", { maxLength: 255 })}
                 />
               </div>
-              <div className="flex items-center">
+
+              <div className="flex items-center mt-2">
                 <label className="min-w-[250px]">Phương thức giao hàng:</label>
                 <div className="flex items-center">
                   <input
                     type="radio"
+                    name="shippingMethod"
                     id="standardDelivery"
-                    {...register("shippingMethod", {
-                      value: "Giao hàng tiêu chuẩn",
-                    })}
-                    onClick={() => setIsExpressDelivery(false)}
+                    value="Giao hàng tiêu chuẩn"
+                    {...register("shippingMethod")}
+                    onClick={() => {
+                      setIsExpressDelivery(false);
+                      setSelectedShippingMethod("Giao hàng tiêu chuẩn");
+                    }}
                   />
                   <label className="min-w-[250px]" htmlFor="standardDelivery">
                     Giao hàng tiêu chuẩn
@@ -196,11 +248,14 @@ export default function DeliveryPage() {
                 <div className="flex items-center">
                   <input
                     type="radio"
+                    name="shippingMethod"
                     id="expressDelivery"
-                    {...register("shippingMethod", {
-                      value: "Giao hàng nhanh",
-                    })}
-                    onClick={() => setIsExpressDelivery(true)}
+                    value="Giao hàng nhanh"
+                    {...register("shippingMethod")}
+                    onClick={() => {
+                      setIsExpressDelivery(true);
+                      setSelectedShippingMethod("Giao hàng nhanh");
+                    }}
                   />
                   <label className="min-w-[250px]" htmlFor="expressDelivery">
                     Giao hàng nhanh
@@ -218,6 +273,7 @@ export default function DeliveryPage() {
                       {...register("shipmentDetails", { maxLength: 255 })}
                     />
                   </div>
+
                   <div className="flex items-center">
                     <label
                       className="min-w-[250px]"
@@ -244,7 +300,7 @@ export default function DeliveryPage() {
                 </>
               )}
 
-              <div>
+              <div className="flex justify-end mt-10">
                 <input type="submit" value="Đặt hàng" />
               </div>
             </form>

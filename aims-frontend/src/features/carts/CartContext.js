@@ -19,7 +19,6 @@ export const CartProvider = ({ children }) => {
   useEffect(() => {
     getListMediaCart();
   }, []);
-
   useEffect(() => {
     if (listMedia.length > 0) {
       let numItem = 0;
@@ -28,11 +27,12 @@ export const CartProvider = ({ children }) => {
         numItem += item.quantity;
         subtotal += Math.round(item.price * item.quantity);
       }
+      console.log("subtotal", subtotal);
       setSubtotal(subtotal);
     } else {
       setSubtotal(0);
     }
-  }, []);
+  }, [listMedia]);
 
   return (
     <CartContext.Provider
