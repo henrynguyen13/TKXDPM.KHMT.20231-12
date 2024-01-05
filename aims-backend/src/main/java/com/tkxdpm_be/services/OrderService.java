@@ -13,9 +13,11 @@ import com.tkxdpm_be.repositories.OrderRepository;
 import com.tkxdpm_be.repositories.OrderShippingRepository;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import utils.ApiException;
+import utils.ERROR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,7 @@ public class OrderService {
         order.setShippingFee(orderRequest.getShippingFee());
         order.setTotalAmount(0.00);
         order.setVat(0.00);
+        order.setStatus(1);
         order = this.orderRepository.save(order);
         Double originPrice = 0d, totalPrice, vat;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -105,5 +108,16 @@ public class OrderService {
             responses.add(response);
         }
         return responses;
+    }
+
+    public Long cancelOrder(Long orderId) throws ApiException {
+        Optional<Order> oOrder = this.orderRepository.findById(orderId);
+        if (oOrder.isEmpty()) {
+            throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
+        }
+        Order order = oOrder.get();
+        this.orderItemRepository.deleteByOrderId(orderId);
+        this.orderRepository.deleteById(orderId);
+        return orderId;
     }
 }

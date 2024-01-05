@@ -16,4 +16,5 @@ public class CartItemDto {
     private Integer quantityAvailable;
     private Integer quantity;
     private Double weight;
+    private Boolean isRush;
 }
