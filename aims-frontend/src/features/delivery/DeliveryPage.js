@@ -6,11 +6,14 @@ import { useState } from "react";
 import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
+
 import { useNavigate } from "react-router-dom";
+
 export default function DeliveryPage() {
   const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   const [shippingFee, setShippingFee] = useState(0);
+
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const navigate = useNavigate();
   const {
@@ -199,7 +202,6 @@ export default function DeliveryPage() {
                   <option value="Yên Bái">Yên Bái</option>
                 </select>
               </div>
-
               <div className="flex items-center">
                 <label className="min-w-[250px]" htmlFor="address">
                   Địa chỉ:
@@ -273,7 +275,6 @@ export default function DeliveryPage() {
                       {...register("shipmentDetails", { maxLength: 255 })}
                     />
                   </div>
-
                   <div className="flex items-center">
                     <label
                       className="min-w-[250px]"

@@ -20,6 +20,9 @@ export default function ProductPage() {
   const [currentPage, setCurrentPage] = useState(0);
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState("");
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
+  const [total, setTotal] = useState(0);
   const handleChangeCategory = async (event: SelectChangeEvent) => {
     setCategory(event.target.value);
 
@@ -37,10 +40,28 @@ export default function ProductPage() {
       setProducts(response?.data?.data?.content);
     }
   };
-  const handleChangeFilter = (event: SelectChangeEvent) => {};
-  const handlePageChange = (event, newPage) => {
-    setCurrentPage(newPage - 1);
+  const handleChangeFilter = async (event: SelectChangeEvent) => {
+    setFilter(event.target.value);
+    const response = await ProductService.getAllMedia(
+      20,
+      1,
+      null,
+      null,
+      event.target.value
+    );
+    setProducts(response?.data?.data?.content);
   };
+  const handlePageChange = async (event, newPage) => {
+    setCurrentPage(newPage - 1);
+
+    const response = await ProductService.getAllMedia(20, newPage);
+    setProducts(response?.data?.data?.content);
+  };
+  const handleSearch = async () => {
+    const response = await ProductService.getAllMedia(20, 1, search);
+    setProducts(response?.data?.data?.content);
+  };
+
   useEffect(() => {
     const getMedia = async () => {
       try {
@@ -51,7 +72,11 @@ export default function ProductPage() {
         console.error("Error fetching media:", error);
       }
     };
-
+    const getTotalMedias = async () => {
+      const response = await ProductService.getAllMedia(50, 1);
+      setTotal(response?.data?.data?.content.length);
+    };
+    getTotalMedias();
     getMedia();
   }, []);
 
@@ -93,27 +118,27 @@ export default function ProductPage() {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                width: 200,
+                width: 220,
               }}
             >
-              <Box sx={{ minWidth: 200 }}>
+              <Box sx={{ minWidth: 220 }}>
                 <FormControl fullWidth>
                   <InputLabel id="filter">Sắp xếp theo</InputLabel>
                   <Select
                     labelId="filter"
                     id="filter"
-                    value={""}
+                    value={filter}
                     label="Sắp xếp theo"
                     onChange={handleChangeFilter}
                   >
-                    <MenuItem value="des">Từ cao xuống thấp</MenuItem>
+                    <MenuItem value="desc">Từ cao xuống thấp</MenuItem>
                     <MenuItem value="asc">Từ thấp đến cao</MenuItem>
                   </Select>
                 </FormControl>
               </Box>
             </Paper>
           </div>
-          <div>Danh sách sản phẩm ({products?.length})</div>
+          <div>Danh sách sản phẩm ({total})</div>
 
           <div>
             <Paper
@@ -125,8 +150,17 @@ export default function ProductPage() {
                 width: 400,
               }}
             >
-              <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Tìm kiếm" />
-              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+              <InputBase
+                sx={{ ml: 1, flex: 1 }}
+                placeholder="Tìm kiếm"
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <IconButton
+                type="button"
+                sx={{ p: "10px" }}
+                aria-label="search"
+                onClick={handleSearch}
+              >
                 <SearchIcon />
               </IconButton>
             </Paper>
@@ -134,19 +168,14 @@ export default function ProductPage() {
         </div>
         {products.length ? (
           <div className="grid grid-cols-12 gap-4 ">
-            {products
-              ?.slice(
-                currentPage * itemsPerPage,
-                (currentPage + 1) * itemsPerPage
-              )
-              ?.map((product, index) => (
-                <div
-                  key={product.id}
-                  className="col-span-3 mx-auto my-0 min-w-[300px]"
-                >
-                  <MediaCard product={product} />
-                </div>
-              ))}
+            {products?.map((product, index) => (
+              <div
+                key={product.id}
+                className="col-span-3 mx-auto my-0 min-w-[300px]"
+              >
+                <MediaCard product={product} />
+              </div>
+            ))}
           </div>
         ) : (
           <div className="text-center">Không có sản phẩm nào</div>
@@ -154,7 +183,7 @@ export default function ProductPage() {
 
         <div className="flex justify-center py-6">
           <Pagination
-            count={Math.ceil(products?.length ? products.length / 20 : 1)}
+            count={Math.ceil(total / 20)}
             color="primary"
             size="large"
             defaultChecked={true}

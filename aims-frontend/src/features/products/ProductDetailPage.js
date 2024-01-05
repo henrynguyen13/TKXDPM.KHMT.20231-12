@@ -8,16 +8,19 @@ import Link from "@mui/material/Link";
 import Chip from "@mui/material/Chip";
 import { FaStar } from "react-icons/fa";
 import Button from "@mui/material/Button";
-
+import { useCart } from "../carts/CartContext";
+import ToastUtil from "../../common/utils";
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState();
+  const { addMediaToCart } = useCart();
   useEffect(() => {
     const getMediaDetail = async () => {
       try {
         const response = await ProductService.getMediaById(id);
+
         const metaDataObject = JSON.parse(response?.data?.data?.metaData);
-        console.log("response", response);
+
         setProduct({
           ...response?.data?.data,
           metaData: metaDataObject,
@@ -66,34 +69,51 @@ export default function ProductDetailPage() {
   return (
     <div>
       <HeaderBar />
+      {ToastUtil.initializeToastContainer()}
 
-      <div className="container max-w-6xl mt-5">
+      <div className="container max-w-7xl mt-5">
         <Breadcrumbs aria-label="breadcrumb">{breadcrumbs}</Breadcrumbs>
         <div className="grid grid-cols-12 gap-4 mt-10">
-          <div className="col-span-5">
+          <div className="col-span-4">
             <img src={product?.imageUrl} alt="product" />
           </div>
-          <div className="col-span-7 ">
-            <div className="font-semibold text-2xl text-slate-700 flex items-center">
-              {product?.title}
-              <Chip
-                sx={{
-                  background: "#0778db",
-                  marginLeft: 3,
-                  color: "#ffffff",
-                  "& .MuiChip-icon": {
-                    color: "#ffffff",
-                  },
-                }}
-                label={product?.type}
-              />
-            </div>
-            <div className="flex text-amber-500 mt-2">
-              <FaStar />
-              <FaStar />
-              <FaStar />
-              <FaStar />
-              <FaStar />
+          <div className="col-span-8 ml-4">
+            <div className="flex justify-between ">
+              <div>
+                <div className="font-semibold text-2xl text-slate-700 flex items-center">
+                  {product?.title}
+                  <Chip
+                    sx={{
+                      background: "#0778db",
+                      marginLeft: 3,
+                      color: "#ffffff",
+                      "& .MuiChip-icon": {
+                        color: "#ffffff",
+                      },
+                    }}
+                    label={product?.type}
+                  />
+                </div>
+                <div className="flex text-amber-500 mt-2">
+                  <FaStar />
+                  <FaStar />
+                  <FaStar />
+                  <FaStar />
+                  <FaStar />
+                </div>
+              </div>
+              <div className="">
+                <Button
+                  size="large"
+                  sx={{ textTransform: "capitalize" }}
+                  variant="contained"
+                  onClick={() => {
+                    addMediaToCart(product);
+                  }}
+                >
+                  Thêm vào giỏ hàng
+                </Button>
+              </div>
             </div>
             <div className="flex  items-center mt-2">
               <div className="font-semibold text-2xl text-red-500 mr-3">
@@ -107,13 +127,20 @@ export default function ProductDetailPage() {
                 (Giảm {getDiscountValue(product?.value, product?.price)} % )
               </span>
             </div>
-            <div className="mt-3 text-xl font-semibold mb-3">
+            <div className="text-green-700 font-medium">
+              Còn hàng: {product?.quantityAvailable ?? 0} sản phẩm
+            </div>
+            <div className="mt-3 text-xl font-semibold mb-3 underline">
+              Mô tả
+            </div>
+            <div className="mt-3 text-lg  mb-3">{product?.description}</div>
+            <div className="mt-3 text-xl font-semibold mb-3 underline">
               Thông tin chi tiết
             </div>
             <table className="table table-warning table-striped">
               <thead>
                 <tr>
-                  <th>Thông tin</th>
+                  <th className="min-w-[200px]">Thông tin</th>
                   <th>Nội dung</th>
                 </tr>
               </thead>
@@ -129,16 +156,6 @@ export default function ProductDetailPage() {
                 )}
               </tbody>
             </table>
-
-            <div className="mt-4">
-              <Button
-                size="large"
-                sx={{ textTransform: "capitalize" }}
-                variant="contained"
-              >
-                Thêm vào giỏ hàng
-              </Button>
-            </div>
           </div>
         </div>
       </div>

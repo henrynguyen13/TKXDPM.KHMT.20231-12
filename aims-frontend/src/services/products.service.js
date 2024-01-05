@@ -2,9 +2,15 @@ import axios from "axios";
 
 axios.defaults.baseURL = "http://localhost:6699/tkxdpm/api/v1";
 export const ProductService = {
-  getAllMedia: async (pageSize, pageNumber, title?: null, type?: null) => {
+  getAllMedia: async (
+    pageSize,
+    pageNumber,
+    title?: null,
+    type?: null,
+    sort: ""
+  ) => {
     const response = await axios.get("/medias", {
-      params: { pageSize, pageNumber, title, type },
+      params: { pageSize, pageNumber, title, type, sort },
     });
     return response;
   },

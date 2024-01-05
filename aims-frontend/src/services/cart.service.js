@@ -16,4 +16,7 @@ export const CartService = {
     deleteItemInCart: async (cartItemId) => {
         await axios.delete(`/carts/delete/${cartItemId}`);
     },
+    deleteCart: async () => {
+        await axios.delete('/carts/deleteAll/1')
+    }
 };

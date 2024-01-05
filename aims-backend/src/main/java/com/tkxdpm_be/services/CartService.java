@@ -7,6 +7,7 @@ import com.tkxdpm_be.repositories.CartItemRepository;
 import com.tkxdpm_be.repositories.MediaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import utils.ApiException;
 import utils.ERROR;
 
@@ -82,6 +83,9 @@ public class CartService {
     public void deleteItemInCart(Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
     }
+
+    @Transactional
+    public void deleteAllItemInCart(Long userId) { cartItemRepository.deleteByUserId(userId); }
 
     public Integer getNumMediaInCart(Long userId) {
         List<CartItem> listCartMedia = cartItemRepository.findByUserId(userId);

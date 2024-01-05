@@ -22,7 +22,7 @@ export default function HeaderBar() {
         />
         <div className="flex items-center">
           <ul className="flex mr-5 text-lg">
-            <li className="cursor-pointer p-3">Trang chủ</li>
+            <li className="cursor-pointer p-3" onClick={() => navigate('/')}>Trang chủ</li>
             <li className="cursor-pointer p-3">Sản phẩm </li>
             <li className="cursor-pointer p-3">Về chúng tôi</li>
             <li className="cursor-pointer p-3">Liên hệ</li>

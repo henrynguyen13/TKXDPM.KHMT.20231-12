@@ -11,45 +11,49 @@ import { ProductService } from "../../services/products.service";
 import { CartService } from "../../services/cart.service";
 import ToastUtil from "../../common/utils";
 import { useNumProduct } from "../../features/carts/NumProductInCartContext";
+import { useCart } from "../../features/carts/CartContext";
 import { useEffect, useState } from "react";
 export default function MediaCard({ product }) {
   const { updateNumProduct, numProduct } = useNumProduct();
+  const { addMediaToCart } = useCart();
   const [medias, setMedias] = useState();
-  useEffect(() => {
-    const getMediasInCart = async () => {
-      const res = await CartService.getAllMediaInCart();
-      setMedias(res?.data);
-    };
-    getMediasInCart();
-  }, []);
-  const addMediaToCart = async () => {
-    console.log("hi", medias.find((r) => r?.mediaId === product?.id).quantity);
-    if (
-      medias.find((r) => r?.mediaId === product?.id).quantity >=
-      product.quantityAvailable
-    ) {
-      ToastUtil.showToastError(
-        `Không thể thêm do số lượng hàng tồn trong kho của sản phẩm ${product.title} không đủ: ${product.quantityAvailable}`
-      );
-      return;
-    } else {
-      const response = await ProductService.addMediaToCart("1", product?.id, 1);
-      if (response?.data?.message === "Success") {
-        updateNumProduct(numProduct + 1);
-        ToastUtil.showToastSuccess("Thành công!");
-      }
-    }
-  };
+  // useEffect(() => {
+  //   const getMediasInCart = async () => {
+  //     const res = await CartService.getAllMediaInCart();
+  //     setMedias(res?.data);
+  //   };
+  //   getMediasInCart();
+  // }, []);
+  // const addMediaToCart = async () => {
+  //   console.log("hi", medias.find((r) => r?.mediaId === product?.id).quantity);
+  //   if (
+  //     medias.find((r) => r?.mediaId === product?.id).quantity >=
+  //     product.quantityAvailable
+  //   ) {
+  //     ToastUtil.showToastError(
+  //       `Không thể thêm do số lượng hàng tồn trong kho của sản phẩm ${product.title} không đủ: ${product.quantityAvailable}`
+  //     );
+  //     return;
+  //   } else {
+  //     const response = await ProductService.addMediaToCart("1", product?.id, 1);
+  //     if (response?.data?.message === "Success") {
+  //       updateNumProduct(numProduct + 1);
+  //       ToastUtil.showToastSuccess("Thành công!");
+  //     }
+  //   }
+  // };
   return (
     <>
       {ToastUtil.initializeToastContainer()}
-      <Card sx={{ maxWidth: 345 }}>
+      <Card sx={{ maxWidth: 320 }}>
         <Link to={`products/${product.id}`}>
-          <CardMedia sx={{ height: 300 }} image={product.imageUrl} />
+          <CardMedia sx={{ height: 250 }} image={product.imageUrl} />
         </Link>
 
         <CardContent>
-          <div className="font-semibold text-xl">{product.title}</div>
+          <div className="font-semibold text-xl max-w-[268px] min-h-[50px]">
+            {product.title}
+          </div>
           <div className="flex text-amber-500 mt-2">
             <FaStar />
             <FaStar />
@@ -85,15 +89,17 @@ export default function MediaCard({ product }) {
               </span>
             </div>
           </div>
-          <div>Có sẵn: {product?.quantityAvailable ?? 0}</div>
+          <div className="text-green-700 font-medium">
+            Còn hàng: {product?.quantityAvailable ?? 0} sản phẩm
+          </div>
         </CardContent>
-        <CardActions sx={{ float: "right" }}>
+        <CardActions sx={{ float: "right", marginBottom: 1 }}>
           <Button
             size="medium"
             sx={{ textTransform: "capitalize" }}
             variant="contained"
             onClick={() => {
-              addMediaToCart();
+              addMediaToCart(product);
             }}
           >
             Thêm vào giỏ hàng
