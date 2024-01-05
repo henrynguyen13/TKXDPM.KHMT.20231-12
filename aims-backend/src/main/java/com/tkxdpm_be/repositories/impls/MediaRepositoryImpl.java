@@ -48,6 +48,9 @@ public class MediaRepositoryImpl implements MediaRepositoryCustom {
         if (sort.equals("desc")) {
             jpql.append(" order by m.price desc ");
         }
+        if (sort.equals("asc")) {
+            jpql.append(" order by m.price asc ");
+        }
         Query selectQuery = entityManager.createNativeQuery(jpql.toString(), Media.class);
         if (!params.isEmpty()) {
             params.forEach(selectQuery::setParameter);

@@ -7,6 +7,7 @@ import com.tkxdpm_be.services.VnPayService;
 import model.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import utils.ApiException;
 
 import java.util.List;
 
@@ -30,6 +31,13 @@ public class OrderController {
     public BaseResponse<String> createOrder(@RequestBody OrderRequest request) {
         BaseResponse<String> response = new BaseResponse<>();
         response.setData(this.orderService.createOrder(request));
+        return response;
+    }
+
+    @PatchMapping("/{order-id}")
+    public BaseResponse<Long> cancelOrder(@PathVariable(name = "order-id") Long orderId) throws ApiException {
+        BaseResponse<Long> response = new BaseResponse<>();
+        response.setData(this.orderService.cancelOrder(orderId));
         return response;
     }
 
