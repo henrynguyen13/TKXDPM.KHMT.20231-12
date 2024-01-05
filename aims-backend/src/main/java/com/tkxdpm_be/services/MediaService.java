@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import utils.ApiException;
 import utils.ERROR;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,5 +31,9 @@ public class MediaService {
             throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
         }
         return oMedia.get();
+    }
+
+    public List<Media> findAllMediaV2() {
+        return mediaRepository.findAll();
     }
 }

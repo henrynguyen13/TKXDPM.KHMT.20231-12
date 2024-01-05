@@ -1,14 +1,8 @@
 package com.tkxdpm_be.services;
 
-import com.tkxdpm_be.entities.Invoice;
-import com.tkxdpm_be.entities.Order;
-import com.tkxdpm_be.entities.OrderItem;
-import com.tkxdpm_be.entities.OrderShipping;
+import com.tkxdpm_be.entities.*;
 import com.tkxdpm_be.models.dtos.InvoiceResponse;
-import com.tkxdpm_be.repositories.InvoiceRepository;
-import com.tkxdpm_be.repositories.OrderItemRepository;
-import com.tkxdpm_be.repositories.OrderRepository;
-import com.tkxdpm_be.repositories.OrderShippingRepository;
+import com.tkxdpm_be.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +21,9 @@ public class InvoiceService implements IInvoiceService{
 
     @Autowired
     private OrderItemRepository orderItemRepository;
+
+    @Autowired
+    private MediaRepository mediaRepository;
 
 //    @Override
 //    public List<Invoice> getAll() {
