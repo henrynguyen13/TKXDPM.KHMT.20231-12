@@ -8,15 +8,36 @@ import { FaStar } from "react-icons/fa";
 import { AiFillThunderbolt } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { ProductService } from "../../services/products.service";
+import { CartService } from "../../services/cart.service";
 import ToastUtil from "../../common/utils";
 import { useNumProduct } from "../../features/carts/NumProductInCartContext";
+import { useEffect, useState } from "react";
 export default function MediaCard({ product }) {
   const { updateNumProduct, numProduct } = useNumProduct();
+  const [medias, setMedias] = useState();
+  useEffect(() => {
+    const getMediasInCart = async () => {
+      const res = await CartService.getAllMediaInCart();
+      setMedias(res?.data);
+    };
+    getMediasInCart();
+  }, []);
   const addMediaToCart = async () => {
-    const response = await ProductService.addMediaToCart("1", product?.id, 1);
-    if (response?.data?.message === "Success") {
-      updateNumProduct(numProduct + 1);
-      ToastUtil.showToastSuccess("Thành công!");
+    console.log("hi", medias.find((r) => r?.mediaId === product?.id).quantity);
+    if (
+      medias.find((r) => r?.mediaId === product?.id).quantity >=
+      product.quantityAvailable
+    ) {
+      ToastUtil.showToastError(
+        `Không thể thêm do số lượng hàng tồn trong kho của sản phẩm ${product.title} không đủ: ${product.quantityAvailable}`
+      );
+      return;
+    } else {
+      const response = await ProductService.addMediaToCart("1", product?.id, 1);
+      if (response?.data?.message === "Success") {
+        updateNumProduct(numProduct + 1);
+        ToastUtil.showToastSuccess("Thành công!");
+      }
     }
   };
   return (
@@ -71,7 +92,9 @@ export default function MediaCard({ product }) {
             size="medium"
             sx={{ textTransform: "capitalize" }}
             variant="contained"
-            onClick={addMediaToCart}
+            onClick={() => {
+              addMediaToCart();
+            }}
           >
             Thêm vào giỏ hàng
           </Button>

@@ -1,3 +1,4 @@
+import "./DeliveryPage.css";
 import React, { useEffect } from "react";
 import HeaderBar from "../../components/layout/HeaderBar";
 import { useForm } from "react-hook-form";
@@ -6,7 +7,6 @@ import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
 import { useNavigate } from "react-router-dom";
-
 export default function DeliveryPage() {
   const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);

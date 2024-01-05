@@ -8,6 +8,13 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { ProductService } from "../../services/products.service";
+import TextField from "@mui/material/TextField";
+import { IoSearchSharp } from "react-icons/io5";
+import InputBase from "@mui/material/InputBase";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import Paper from "@mui/material/Paper";
 export default function ProductPage() {
   const itemsPerPage = 20;
   const [currentPage, setCurrentPage] = useState(0);
@@ -52,43 +59,77 @@ export default function ProductPage() {
     <>
       <div className="bg-[#ede5e5]">
         <div className=" pt-20 text-center text-3xl uppercase font-medium mb-10 flex justify-evenly items-center ">
-          <div>
-            <Box sx={{ minWidth: 200 }}>
-              <FormControl fullWidth>
-                <InputLabel id="category">Loại sản phẩm</InputLabel>
-                <Select
-                  labelId="category"
-                  id="category"
-                  value={category}
-                  label="Loại sản phẩm"
-                  onChange={handleChangeCategory}
-                >
-                  <MenuItem value="book">Sách quyển</MenuItem>
-                  <MenuItem value="cd">Đĩa CD</MenuItem>
-                  <MenuItem value="lp">Đĩa than LP</MenuItem>
-                  <MenuItem value="dvd">Đĩa DVD</MenuItem>
-                  <MenuItem value="">Tất cả</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
+          <div className="flex">
+            <Paper
+              component="form"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: 200,
+              }}
+            >
+              <Box sx={{ minWidth: 200 }}>
+                <FormControl fullWidth>
+                  <InputLabel id="category">Loại sản phẩm</InputLabel>
+                  <Select
+                    labelId="category"
+                    id="category"
+                    value={category}
+                    label="Loại sản phẩm"
+                    onChange={handleChangeCategory}
+                  >
+                    <MenuItem value="book">Sách quyển</MenuItem>
+                    <MenuItem value="cd">Đĩa CD</MenuItem>
+                    <MenuItem value="lp">Đĩa than LP</MenuItem>
+                    <MenuItem value="dvd">Đĩa DVD</MenuItem>
+                    <MenuItem value="">Tất cả</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Paper>
+            <div className="mr-2"></div>
+            <Paper
+              component="form"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                width: 200,
+              }}
+            >
+              <Box sx={{ minWidth: 200 }}>
+                <FormControl fullWidth>
+                  <InputLabel id="filter">Sắp xếp theo</InputLabel>
+                  <Select
+                    labelId="filter"
+                    id="filter"
+                    value={""}
+                    label="Sắp xếp theo"
+                    onChange={handleChangeFilter}
+                  >
+                    <MenuItem value="des">Từ cao xuống thấp</MenuItem>
+                    <MenuItem value="asc">Từ thấp đến cao</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+            </Paper>
           </div>
           <div>Danh sách sản phẩm ({products?.length})</div>
+
           <div>
-            <Box sx={{ minWidth: 200 }}>
-              <FormControl fullWidth>
-                <InputLabel id="filter">Sắp xếp theo</InputLabel>
-                <Select
-                  labelId="filter"
-                  id="filter"
-                  value={""}
-                  label="Sắp xếp theo"
-                  onChange={handleChangeFilter}
-                >
-                  <MenuItem value="des">Từ cao xuống thấp</MenuItem>
-                  <MenuItem value="asc">Từ thấp đến cao</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
+            <Paper
+              component="form"
+              sx={{
+                p: "2px 4px",
+                display: "flex",
+                alignItems: "center",
+                width: 400,
+              }}
+            >
+              <InputBase sx={{ ml: 1, flex: 1 }} placeholder="Tìm kiếm" />
+              <IconButton type="button" sx={{ p: "10px" }} aria-label="search">
+                <SearchIcon />
+              </IconButton>
+            </Paper>
           </div>
         </div>
         {products.length ? (

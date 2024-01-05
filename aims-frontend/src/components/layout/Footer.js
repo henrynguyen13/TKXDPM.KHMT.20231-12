@@ -102,8 +102,7 @@ function Footer() {
         </div>
 
         <p className={`${styles["copy-right"]} container flex items-center`}>
-          Bản quyền <FaRegCopyright /> 2023 Selectronic Inc. Bảo lưu mọi bản
-          quyền.
+          Bản quyền <FaRegCopyright /> 2023 Aims Inc. Bảo lưu mọi bản quyền.
         </p>
       </div>
     </>
