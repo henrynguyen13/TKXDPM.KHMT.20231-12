@@ -1,11 +1,14 @@
 package com.tkxdpm_be.controllers;
 
+import com.tkxdpm_be.models.dtos.OrderDTO;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.services.OrderService;
 import com.tkxdpm_be.services.VnPayService;
 import model.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @CrossOrigin(allowedHeaders = "*", origins = "*")
@@ -32,9 +35,14 @@ public class OrderController {
 
     @PostMapping("/get-shipping-fee")
     public BaseResponse<Double> getShippingFee(@RequestBody OrderRequest request,
-                                             @RequestParam boolean isRush) {
+                                               @RequestParam boolean isRush) {
         BaseResponse<Double> response = new BaseResponse<>();
         response.setData(this.orderService.getShippingFee(request.getMedias(), request.getOrderShipping().getCity(), isRush));
         return response;
+    }
+
+    @GetMapping
+    public List<OrderDTO> getAllOrders() {
+        return orderService.getAllOrders();
     }
 }
