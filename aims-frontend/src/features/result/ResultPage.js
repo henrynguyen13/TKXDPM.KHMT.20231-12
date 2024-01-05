@@ -28,8 +28,8 @@ const ResultPage = () => {
     };
 
     useEffect(() => {
-        deleteCart();
         updateNumProduct(0);
+        deleteCart();  
     }, []);
 
     return (
