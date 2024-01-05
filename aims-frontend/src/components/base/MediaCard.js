@@ -54,13 +54,28 @@ export default function MediaCard({ product }) {
           <div className="font-semibold text-xl max-w-[268px] min-h-[50px]">
             {product.title}
           </div>
-          <div className="flex text-amber-500 mt-2">
-            <FaStar />
-            <FaStar />
-            <FaStar />
-            <FaStar />
-            <FaStar />
+          <div className="flex justify-between">
+            <div className="flex text-amber-500 mt-2">
+              <FaStar />
+              <FaStar />
+              <FaStar />
+              <FaStar />
+              <FaStar />
+            </div>
+
+            <Chip
+              sx={{
+                background: "green",
+                color: "#ffffff",
+                "& .MuiChip-icon": {
+                  color: "#ffffff",
+                },
+                fontSize: "12px",
+              }}
+              label={product?.isRush ? "GHN" : "GHTC"}
+            />
           </div>
+
           <div className="flex justify-between items-center mt-2">
             <div className="font-semibold text-2xl text-red-500">
               {" "}

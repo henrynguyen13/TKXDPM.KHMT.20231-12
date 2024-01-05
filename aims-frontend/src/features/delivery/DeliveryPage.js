@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
-
+import ToastUtil from "../../common/utils";
 import { useNavigate } from "react-router-dom";
 
 export default function DeliveryPage() {
@@ -71,8 +71,23 @@ export default function DeliveryPage() {
     }
   };
 
+  const checkExpressMethod = () => {
+    console.log("-------", listMedia);
+    if (listMedia?.filter((media) => media.isRush).length === 0) {
+      ToastUtil.showToastError(
+        "Sản phẩm trong giỏ hàng không hỗ trợ giao hàng nhanh"
+      );
+      // setIsExpressDelivery(false);
+      // setSelectedShippingMethod("Giao hàng tiêu chuẩn");
+      return;
+    }
+    setIsExpressDelivery(true);
+    setSelectedShippingMethod("Giao hàng nhanh");
+  };
+
   return (
     <>
+      {ToastUtil.initializeToastContainer()}
       <HeaderBar />
       <div className="pt-2 mx-10">
         <div className="grid grid-cols-12 gap-4 mt-10">
@@ -91,6 +106,7 @@ export default function DeliveryPage() {
                 <input
                   type="text"
                   id="name"
+                  className="input-text"
                   placeholder="Họ và tên"
                   {...register("name", {
                     required: {
@@ -255,8 +271,7 @@ export default function DeliveryPage() {
                     value="Giao hàng nhanh"
                     {...register("shippingMethod")}
                     onClick={() => {
-                      setIsExpressDelivery(true);
-                      setSelectedShippingMethod("Giao hàng nhanh");
+                      checkExpressMethod();
                     }}
                   />
                   <label className="min-w-[250px]" htmlFor="expressDelivery">
