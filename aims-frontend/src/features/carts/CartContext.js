@@ -40,10 +40,10 @@ export const CartProvider = ({ children }) => {
   const addMediaToCart = async (product) => {
     console.log(
       "hi",
-      listMedia.find((r) => r?.mediaId === product?.id).quantity
+      listMedia.find((r) => r?.mediaId === product?.id)?.quantity
     );
     if (
-      listMedia.find((r) => r?.mediaId === product?.id).quantity >=
+      listMedia.find((r) => r?.mediaId === product?.id)?.quantity >=
       product.quantityAvailable
     ) {
       ToastUtil.showToastError(
