@@ -71,21 +71,19 @@ function Footer() {
                 <li className={styles["footer-desc"]}>
                   <div className="flex items-center">
                     <MdEmail className="mr-2" />
-                    <a href="mailto: selectronic@gmail.com">
-                      selectronic@gmail.com
-                    </a>
+                    <a href="mailto: aims@gmail.com">aims@gmail.com</a>
                   </div>
                 </li>
                 <li className={styles["footer-desc"]}>
                   <div className="flex items-center">
                     <FaPhone className="mr-2" />
-                    <a href="tel:0978014692">0978.014.692</a>
+                    <a href="tel:0978014692">0966.669.966</a>
                   </div>
                 </li>
                 <li className={styles["footer-desc"]}>
                   <div className="flex items-center">
-                    <HiMapPin className="mr-2" /> 121 Kim Ngưu, Quận Hai Bà
-                    Trưng, Thành phố Hà Nội
+                    <HiMapPin className="mr-2" /> 1 Đại Cồ Việt, Hai Bà Trưng,
+                    Hà Nội
                   </div>
                 </li>
               </ul>
@@ -94,7 +92,7 @@ function Footer() {
                   className={styles["footer-map"]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  href="https://www.google.com/maps/place/121+P.+Kim+Ng%C6%B0u,+Thanh+L%C6%B0%C6%A1ng,+Hai+B%C3%A0+Tr%C6%B0ng,+H%C3%A0+N%E1%BB%99i,+Vietnam/@21.0068514,105.8589204,17z/data=!3m1!4b1!4m6!3m5!1s0x3135abf7d314a99f:0x3b79ab1889b035e!8m2!3d21.0068514!4d105.8614953!16s%2Fg%2F11cs7v50hz?entry=ttu"
+                  href="https://www.google.com/maps/place/1+%C4%90%E1%BA%A1i+C%E1%BB%93+Vi%E1%BB%87t,+B%C3%A1ch+Khoa,+Hai+B%C3%A0+Tr%C6%B0ng,+H%C3%A0+N%E1%BB%99i,+Vietnam/@21.0074229,105.8399398,17z/data=!3m1!4b1!4m6!3m5!1s0x3135ab8a922653a9:0x6c2ec19683313eab!8m2!3d21.0074229!4d105.8425147!16s%2Fg%2F11gfjt79ty?entry=ttu"
                 >
                   Xem bản đồ
                 </a>
@@ -104,8 +102,7 @@ function Footer() {
         </div>
 
         <p className={`${styles["copy-right"]} container flex items-center`}>
-          Bản quyền <FaRegCopyright /> 2023 Selectronic Inc. Bảo lưu mọi bản
-          quyền.
+          Bản quyền <FaRegCopyright /> 2023 Aims Inc. Bảo lưu mọi bản quyền.
         </p>
       </div>
     </>
