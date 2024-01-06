@@ -1,6 +1,5 @@
 package com.tkxdpm_be.controllers;
 
-import com.tkxdpm_be.entities.Order;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.models.responses.OrderResponse;
 import com.tkxdpm_be.services.OrderService;

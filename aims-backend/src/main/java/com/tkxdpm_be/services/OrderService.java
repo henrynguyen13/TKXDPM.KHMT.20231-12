@@ -4,12 +4,14 @@ import com.tkxdpm_be.entities.Media;
 import com.tkxdpm_be.entities.Order;
 import com.tkxdpm_be.entities.OrderItem;
 import com.tkxdpm_be.entities.OrderShipping;
-import com.tkxdpm_be.models.dtos.CartItemDto;
-import com.tkxdpm_be.models.dtos.OrderItemDto;
+
 import com.tkxdpm_be.models.requests.MediaRequest;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.models.responses.OrderResponse;
-import com.tkxdpm_be.repositories.*;
+import com.tkxdpm_be.repositories.MediaRepository;
+import com.tkxdpm_be.repositories.OrderItemRepository;
+import com.tkxdpm_be.repositories.OrderRepository;
+import com.tkxdpm_be.repositories.OrderShippingRepository;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -32,20 +34,15 @@ public class OrderService {
 
     @Autowired
     OrderItemRepository orderItemRepository;
-
     @Autowired
     MediaRepository mediaRepository;
 
-    @Autowired
-    CartItemRepository cartItemRepository;
 
     public OrderResponse getDetail(Long orderId) {
         OrderResponse response = new OrderResponse();
         Order order = this.orderRepository.findById(orderId).orElse(new Order());
         OrderShipping orderShipping = this.orderShippingRepository.findById(order.getOrderShippingId()).orElse(new OrderShipping());
-        List<OrderItemDto> medias = this.cartItemRepository.getAllMediaInCart(order.getUserId());
         response.setOrder(order);
-        response.setMedias(medias);
         response.setOrderShipping(orderShipping);
         return response;
     }

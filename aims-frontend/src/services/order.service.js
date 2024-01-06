@@ -13,4 +13,9 @@ export const OrderService = {
     const response = await axios.post("/orders", request);
     return response;
   },
+
+  getOrderById: async (id) => {
+    const response = await axios.get(`/orders/detail/${id}`);
+    return response;
+  },
 };

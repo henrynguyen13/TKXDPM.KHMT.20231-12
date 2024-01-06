@@ -6,13 +6,14 @@ import { useState } from "react";
 import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
-
+import ToastUtil from "../../common/utils";
 import { useNavigate } from "react-router-dom";
 
 export default function DeliveryPage() {
   const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   const [shippingFee, setShippingFee] = useState(0);
+  const [minTime, setMinTime] = useState("");
 
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const navigate = useNavigate();
@@ -38,14 +39,14 @@ export default function DeliveryPage() {
           deliveryInstruction: data?.deliveryInstruction ?? "",
           deliveryTime: data?.deliveryTime ?? "",
         },
-        medias: listMedia,
+        medias: listMedia.map((media) => ({ ...media, id: media?.mediaId })),
         shippingFee: shippingFee,
         userId: "1",
       };
       const response = await OrderService.createOrder(request);
       console.log("---------", response);
-      if (response?.data?.data === "Success") {
-        navigate("/invoice");
+      if (response?.data?.message === "Success") {
+        navigate(`/invoice/${response?.data?.data}`);
       }
     } catch (error) {
       console.error("Error create order:", error);
@@ -71,8 +72,33 @@ export default function DeliveryPage() {
     }
   };
 
+  const checkExpressMethod = () => {
+    console.log("-------", listMedia);
+    if (listMedia?.filter((media) => media.isRush).length === 0) {
+      ToastUtil.showToastError(
+        "Sản phẩm trong giỏ hàng không hỗ trợ giao hàng nhanh"
+      );
+      return;
+    }
+    setIsExpressDelivery(true);
+    setSelectedShippingMethod("Giao hàng nhanh");
+  };
+
+  useEffect(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    const minTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    setMinTime(minTime);
+  }, []);
+
   return (
     <>
+      {ToastUtil.initializeToastContainer()}
       <HeaderBar />
       <div className="pt-2 mx-10">
         <div className="grid grid-cols-12 gap-4 mt-10">
@@ -91,6 +117,7 @@ export default function DeliveryPage() {
                 <input
                   type="text"
                   id="name"
+                  className="input-text"
                   placeholder="Họ và tên"
                   {...register("name", {
                     required: {
@@ -255,8 +282,7 @@ export default function DeliveryPage() {
                     value="Giao hàng nhanh"
                     {...register("shippingMethod")}
                     onClick={() => {
-                      setIsExpressDelivery(true);
-                      setSelectedShippingMethod("Giao hàng nhanh");
+                      checkExpressMethod();
                     }}
                   />
                   <label className="min-w-[250px]" htmlFor="expressDelivery">
@@ -266,7 +292,7 @@ export default function DeliveryPage() {
               </div>
               {isExpressDelivery && (
                 <>
-                  <div className="flex items-center">
+                  <div className="flex items-center mt-4">
                     <label className="min-w-[250px]" htmlFor="shipmentDetails">
                       Thông tin giao hàng nhanh:
                     </label>
@@ -294,6 +320,7 @@ export default function DeliveryPage() {
                     <input
                       type="datetime-local"
                       id="deliveryTime"
+                      min={minTime}
                       placeholder="Thời gian nhận hàng"
                       {...register("deliveryTime", {})}
                     />

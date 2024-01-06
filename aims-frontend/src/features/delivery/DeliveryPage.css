@@ -1,7 +1,7 @@
 textarea,
-.DeliveryPage.js input[type="text"],
 input[type="tel"],
 input[type="datetime-local"],
+.input-text,
 select {
   width: 100%;
   padding: 10px;
