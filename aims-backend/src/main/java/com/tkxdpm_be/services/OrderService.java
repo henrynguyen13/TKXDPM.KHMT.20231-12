@@ -38,12 +38,8 @@ public class OrderService {
     MediaRepository mediaRepository;
 
 
-
     public OrderResponse getDetail(Long orderId) {
-        System.out.println("---> " + orderId);
         OrderResponse response = new OrderResponse();
-        System.out.println("---> " + response);
-
         Order order = this.orderRepository.findById(orderId).orElse(new Order());
         OrderShipping orderShipping = this.orderShippingRepository.findById(order.getOrderShippingId()).orElse(new OrderShipping());
         response.setOrder(order);
