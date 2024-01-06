@@ -1,6 +1,8 @@
 ﻿﻿# TKXDPM.KHMT.20231-12
 ## Lời cảm ơn
 Nhóm 12 chúng em xin chân thành cảm ơn cô Nguyễn Thị Thu Trang và anh Lê Thanh Giang đã nhiệt tình chỉ dạy và hướng dẫn chúng em trong quá trình thực hiện bài tập lớn môn học.
+
+Link video demo: https://www.youtube.com/watch?v=PnwOcS9Pj14&feature=youtu.be
 ## Author
 
 | Name             | Role        |
