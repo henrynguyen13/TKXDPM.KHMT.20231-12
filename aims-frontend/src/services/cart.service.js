@@ -10,6 +10,10 @@ export const CartService = {
         const response = await axios.get("/carts/numProduct/1");
         return response;
     },
+    getTotalPriceInCart: async () => {
+        const response = await axios.get("/carts/totalPrice/1");
+        return response;
+    },
     changeQuantityItemInCart: async (cartItemId, typeChange) => {
         await axios.put(`/carts/quantityItem/${cartItemId}`, { typeChange: typeChange });
     },

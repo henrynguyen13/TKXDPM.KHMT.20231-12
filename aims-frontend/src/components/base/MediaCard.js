@@ -13,6 +13,8 @@ import ToastUtil from "../../common/utils";
 import { useNumProduct } from "../../features/carts/NumProductInCartContext";
 import { useCart } from "../../features/carts/CartContext";
 import { useEffect, useState } from "react";
+import { formatNumber } from "../../common/utils";
+
 export default function MediaCard({ product }) {
   const { updateNumProduct, numProduct } = useNumProduct();
   const { addMediaToCart } = useCart();
@@ -79,10 +81,10 @@ export default function MediaCard({ product }) {
           <div className="flex justify-between items-center mt-2">
             <div className="font-semibold text-2xl text-red-500">
               {" "}
-              ₫ {product.price}
+              ₫ {formatNumber(product.price)}
             </div>
             <div className="font-medium ">
-              <span className="line-through">₫ {product.value}</span>
+              <span className="line-through">₫ {formatNumber(product.value)}</span>
               <span>
                 {" "}
                 <Chip

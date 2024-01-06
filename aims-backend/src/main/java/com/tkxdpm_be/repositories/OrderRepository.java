@@ -13,6 +13,8 @@ import java.util.List;
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
     List<Order> findByUserId(Long userId);
 
+    List<Order> findByUserIdAndStatus(Long userId, Integer status);
+
     @Modifying
     @Transactional
     void deleteById(Long orderId);

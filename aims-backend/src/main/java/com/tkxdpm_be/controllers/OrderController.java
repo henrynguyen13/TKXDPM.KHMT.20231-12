@@ -1,5 +1,6 @@
 package com.tkxdpm_be.controllers;
 
+import com.tkxdpm_be.models.dtos.OrderInfoDTO;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.models.responses.OrderResponse;
 import com.tkxdpm_be.services.OrderService;
@@ -41,14 +42,12 @@ public class OrderController {
         return response;
     }
 
-    @PatchMapping("/{order-id}/payment-success")
-    public BaseResponse<Long> paymentSuccess(@PathVariable(name = "order-id") Long orderId) throws ApiException {
-        BaseResponse<Long> response = new BaseResponse<>();
-        response.setData(this.orderService.paymentSuccess(orderId));
-        return response;
+    @PutMapping("/payment-success/{order-id}")
+    public void paymentSuccess(@PathVariable(name = "order-id") Long orderId) throws ApiException {
+        orderService.paymentSuccess(orderId);
     }
 
-    @PatchMapping("/{order-id}")
+    @DeleteMapping("/cancel-order/{order-id}")
     public BaseResponse<Long> cancelOrder(@PathVariable(name = "order-id") Long orderId) throws ApiException {
         BaseResponse<Long> response = new BaseResponse<>();
         response.setData(this.orderService.cancelOrder(orderId));
@@ -64,9 +63,9 @@ public class OrderController {
     }
 
     @GetMapping("/history/{user-id}")
-    public BaseResponse<List<OrderResponse>> getHistoryOrder(@PathVariable(name = "user-id") Long userId) {
-        BaseResponse<List<OrderResponse>> response = new BaseResponse<>();
-        response.setData(this.orderService.getHistoryOrder(userId));
+    public BaseResponse<List<OrderInfoDTO>> getHistoryOrder(@PathVariable(name = "user-id") Long userId) {
+        BaseResponse<List<OrderInfoDTO>> response = new BaseResponse<>();
+        response.setData(orderService.getHistoryOrder(userId));
         return response;
     }
 }

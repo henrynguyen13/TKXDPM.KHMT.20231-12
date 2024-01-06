@@ -1,5 +1,6 @@
 package com.tkxdpm_be.services;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.tkxdpm_be.entities.CartItem;
 import com.tkxdpm_be.entities.Media;
 import com.tkxdpm_be.models.dtos.CartItemDto;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -84,7 +86,6 @@ public class CartService {
     public void deleteItemInCart(Long cartItemId) {
         cartItemRepository.deleteById(cartItemId);
     }
-
     @Transactional
     public void deleteAllItemInCart(Long userId) { cartItemRepository.deleteByUserId(userId); }
 
@@ -95,5 +96,15 @@ public class CartService {
              numProduct.addAndGet(item.getQuantity());
         });
         return numProduct.get();
+    }
+
+    public Double getTotalPriceInCart(Long userId) {
+        List<CartItem> listCartMedia = cartItemRepository.findByUserId(userId);
+        AtomicDouble totalPriceInCart = new AtomicDouble(0);
+        listCartMedia.forEach(cartItem -> {
+            Media media = mediaRepository.findById(cartItem.getMediaId()).orElseThrow();
+            totalPriceInCart.addAndGet(media.getPrice() * cartItem.getQuantity());
+        });
+        return totalPriceInCart.get();
     }
 }
