@@ -37,8 +37,17 @@ public class OrderService {
     @Autowired
     MediaRepository mediaRepository;
 
+    public OrderResponse getDetail(Long orderId) {
+        OrderResponse response = new OrderResponse();
+        Order order = this.orderRepository.findById(orderId).orElse(new Order());
+        OrderShipping orderShipping = this.orderShippingRepository.findById(order.getOrderShippingId()).orElse(new OrderShipping());
+        response.setOrder(order);
+        response.setOrderShipping(orderShipping);
+        return response;
+    }
+
     @Transactional(rollbackFor = Exception.class)
-    public String createOrder(OrderRequest orderRequest) {
+    public Long createOrder(OrderRequest orderRequest) {
         OrderShipping orderShipping = orderRequest.getOrderShipping();
         orderShipping = this.orderShippingRepository.save(orderShipping);
         Order order = new Order();
@@ -47,7 +56,7 @@ public class OrderService {
         order.setShippingFee(orderRequest.getShippingFee());
         order.setTotalAmount(0.00);
         order.setVat(0.00);
-        order.setStatus(1);
+        order.setStatus(0);
         order = this.orderRepository.save(order);
         Double originPrice = 0d, totalPrice, vat;
         List<OrderItem> orderItems = new ArrayList<>();
@@ -69,8 +78,8 @@ public class OrderService {
         order.setOriginPrice(originPrice);
         order.setVat(vat);
         order.setTotalAmount(totalPrice);
-        this.orderRepository.save(order);
-        return "Success";
+        order = this.orderRepository.save(order);
+        return order.getId();
     }
 
     public Double getShippingFee(List<MediaRequest> medias, String city, boolean isRush) {
@@ -115,9 +124,19 @@ public class OrderService {
         if (oOrder.isEmpty()) {
             throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
         }
-        Order order = oOrder.get();
         this.orderItemRepository.deleteByOrderId(orderId);
         this.orderRepository.deleteById(orderId);
+        return orderId;
+    }
+
+    public Long paymentSuccess(Long orderId) throws ApiException {
+        Optional<Order> oOrder = this.orderRepository.findById(orderId);
+        if (oOrder.isEmpty()) {
+            throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
+        }
+        Order order = oOrder.get();
+        order.setStatus(1);
+        this.orderRepository.save(order);
         return orderId;
     }
 }
