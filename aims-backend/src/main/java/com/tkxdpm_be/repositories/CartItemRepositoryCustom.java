@@ -1,5 +1,9 @@
 package com.tkxdpm_be.repositories;
 
-public interface CartItemRepositoryCustom {
+import com.tkxdpm_be.models.dtos.OrderItemDto;
 
+import java.util.List;
+
+public interface CartItemRepositoryCustom {
+    List<OrderItemDto> getAllMediaInCart(Long userId);
 }
