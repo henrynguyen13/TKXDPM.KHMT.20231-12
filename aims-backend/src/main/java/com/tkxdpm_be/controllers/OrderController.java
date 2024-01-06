@@ -28,7 +28,7 @@ public class OrderController {
         return response;
     }
 
-    @GetMapping("/{order-id}")
+    @GetMapping("/detail/{order-id}")
     public BaseResponse<OrderResponse> getDetail(@PathVariable(name = "order-id") Long orderId) throws ApiException {
         BaseResponse<OrderResponse> response = new BaseResponse<>();
         response.setData(this.orderService.getDetail(orderId));

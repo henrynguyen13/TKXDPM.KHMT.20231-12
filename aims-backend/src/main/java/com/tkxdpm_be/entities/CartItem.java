@@ -1,6 +1,5 @@
 package com.tkxdpm_be.entities;
 
-import com.tkxdpm_be.models.dtos.CartItemDto;
 import lombok.Data;
 
 import javax.persistence.*;
