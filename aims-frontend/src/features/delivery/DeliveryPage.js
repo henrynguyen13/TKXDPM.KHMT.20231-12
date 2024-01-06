@@ -13,6 +13,7 @@ export default function DeliveryPage() {
   const { subtotal, listMedia } = useCart();
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   const [shippingFee, setShippingFee] = useState(0);
+  const [minTime, setMinTime] = useState("");
 
   const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ export default function DeliveryPage() {
           deliveryInstruction: data?.deliveryInstruction ?? "",
           deliveryTime: data?.deliveryTime ?? "",
         },
-        medias: listMedia,
+        medias: listMedia.map((media) => ({ ...media, id: media?.mediaId })),
         shippingFee: shippingFee,
         userId: "1",
       };
@@ -77,13 +78,23 @@ export default function DeliveryPage() {
       ToastUtil.showToastError(
         "Sản phẩm trong giỏ hàng không hỗ trợ giao hàng nhanh"
       );
-      // setIsExpressDelivery(false);
-      // setSelectedShippingMethod("Giao hàng tiêu chuẩn");
       return;
     }
     setIsExpressDelivery(true);
     setSelectedShippingMethod("Giao hàng nhanh");
   };
+
+  useEffect(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, "0");
+    const day = now.getDate().toString().padStart(2, "0");
+    const hours = now.getHours().toString().padStart(2, "0");
+    const minutes = now.getMinutes().toString().padStart(2, "0");
+
+    const minTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+    setMinTime(minTime);
+  }, []);
 
   return (
     <>
@@ -281,7 +292,7 @@ export default function DeliveryPage() {
               </div>
               {isExpressDelivery && (
                 <>
-                  <div className="flex items-center">
+                  <div className="flex items-center mt-4">
                     <label className="min-w-[250px]" htmlFor="shipmentDetails">
                       Thông tin giao hàng nhanh:
                     </label>
@@ -309,6 +320,7 @@ export default function DeliveryPage() {
                     <input
                       type="datetime-local"
                       id="deliveryTime"
+                      min={minTime}
                       placeholder="Thời gian nhận hàng"
                       {...register("deliveryTime", {})}
                     />
