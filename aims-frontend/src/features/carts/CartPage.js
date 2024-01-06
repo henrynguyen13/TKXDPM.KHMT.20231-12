@@ -9,6 +9,7 @@ import { CartService } from "../../services/cart.service";
 import { useNumProduct } from "./NumProductInCartContext";
 import { useNavigate } from "react-router-dom";
 import { formatNumber } from "../../common/utils";
+
 const CartPage = () => {
   const navigate = useNavigate();
 

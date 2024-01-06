@@ -11,4 +11,5 @@ import java.util.Optional;
 
 @Repository
 public interface OrderShippingRepository extends JpaRepository<OrderShipping, Long>, JpaSpecificationExecutor<OrderShipping> {
+
 }

@@ -10,6 +10,8 @@ import { FaStar } from "react-icons/fa";
 import Button from "@mui/material/Button";
 import { useCart } from "../carts/CartContext";
 import ToastUtil from "../../common/utils";
+import { formatNumber } from "../../common/utils";
+
 export default function ProductDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState();
@@ -118,10 +120,10 @@ export default function ProductDetailPage() {
             <div className="flex  items-center mt-2">
               <div className="font-semibold text-2xl text-red-500 mr-3">
                 {" "}
-                ₫ {product?.price}
+                ₫ {formatNumber(product?.price)}
               </div>
               <span className="font-medium  line-through mr-2">
-                ₫ {product?.value}
+                ₫ {formatNumber(product?.value)}
               </span>
               <span className="text-red-500 font-medium">
                 (Giảm {getDiscountValue(product?.value, product?.price)} % )

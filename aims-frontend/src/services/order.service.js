@@ -18,4 +18,15 @@ export const OrderService = {
     const response = await axios.get(`/orders/detail/${id}`);
     return response;
   },
+  orderSuccess: async (id) => {
+    await axios.put(`/orders/payment-success/${id}`);
+  },
+  getHistoryOrder: async () => {
+    const response = await axios.get(`/orders/history/1`);
+    return response;
+  },
+  cancelOrder: async (id) => {
+    const response = await axios.delete(`/orders/cancel-order/${id}`);
+    return response;
+  }
 };
