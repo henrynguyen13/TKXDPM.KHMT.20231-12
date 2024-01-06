@@ -1,65 +1,111 @@
-import React from "react";
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import { Box } from '@mui/material';
-import Button from '@mui/material/Button';
-import book1 from "../../assets/images/book1.jpg";
-import book2 from "../../assets/images/book2.jpg";
-import book3 from "../../assets/images/book3.jpg";
+import React, { useEffect, useState } from "react";
+import HeaderBar from "../../components/layout/HeaderBar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { formatNumber } from "../../common/utils";
+import { faMinus, faPlus, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getAllOrdersAPIs } from "../../APIs/OrderAPIs";
 
-const imageUrls = {
-    book1: book1,
-    book2: book2,
-    book3: book3,
-};
 
-const productInfo = [
-    {
-        name: 'Book 1',
-        quantity: 2,
-        unitprice: 50000,
-    },
-    {
-        name: 'Book 2',
-        quantity: 1,
-        unitprice: 30000,
-    },
-    {
-        name: 'Book 3',
-        quantity: 3,
-        unitprice: 60000,
-    },
-];
 
 const HistoryPage = () => {
+    let [orders, setOrders] = useState([]);
+    useEffect(() => {
+        getAllOrdersAPIs().then((res) => {
+            setOrders(res)
+        })
+    }, [])
+  
+    let items = orders ?
+        orders.map((order, index) => {
 
-    return(
+            let tBody = order.medias ?
+                order.medias.map((media, i) => {
+                    return (<tr key={i} className="record">
+                        <td>{i+1}</td>
+                        <td style={{ width: "450px" }}>
+                            <div className="product">
+                                <div className="product-image">
+                                    <img src={media.imageUrl} alt="product" />
+                                </div>
+                                <div className="product-name">{media.title}</div>
+                            </div>
+                        </td>
+                        <td style={{ width: "135px" }}>
+                            {formatNumber(media.price)}
+                        </td>
+                        <td>
+                            <div className="quantity">
+                                <div>
+
+                                </div>
+                                <div>{media.quantity}</div>
+                                <div>
+
+                                </div>
+                            </div>
+                        </td>
+                        <td style={{ width: "135px" }}>
+                            {formatNumber(media.price*media.quantity)}
+                        </td>
+                        <td style={{ width: "100px" }}>
+                            <div>
+
+                            </div>
+                        </td>
+                    </tr>)
+                }) : null
+            return (
+                <div key={index} className="cart-page">
+                    <div className="name-page">{`Đơn hàng số ${order.id}`}</div>
+
+                    <div className="container">
+                        <div className="left-container">
+
+                            <div className="table-container">
+                                <table>
+                                    <tbody>
+                                        <tr className="col-name">
+                                            <th>STT</th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Đơn giá</th>
+                                            <th>Số lượng</th>
+                                            <th>Thành tiền</th>
+                                            <th></th>
+                                        </tr>
+                                        {tBody}
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </div>
+                        <div className="right-container">
+                            <div className="cost-container">
+                                <div className="cost-item">
+                                    <div>Tổng giá cả</div>
+                                    <div>{formatNumber(order.totalAmount)}đ</div>
+                                </div>
+                                <div className="cost-item">
+                                    <div>VAT(10%)</div>
+                                    <div>{formatNumber((order.vat * 10) / 100)}đ</div>
+                                </div>
+                                <div className="cost-item">
+                                    <div>Tổng tiền</div>
+                                    <div>{formatNumber(order.totalAmount + (order.vat * 10) / 100)}đ</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            )
+        }) : null
+    return (
         <div>
-            <Box mt={5} pl={5} sx={{ textAlign: 'center' }}>
-                <Typography variant='h3' sx={{color: 'blue' }}>HISTORY</Typography>
-            </Box>
-            <Grid mt = {5} container>
-                <Grid xs = {3}></Grid>
-                <Grid item xs={9} pl={3} container alignItems="center" sx={{ maxHeight: '500px', overflow: 'auto' }}>
-                    <Grid container spacing={2}>
-                        {productInfo.map((product, index) => (
-                        <Grid container item xs={12} key={index}>
-                            <Grid item xs={3}>
-                            <img src={imageUrls[`book${index + 1}`]} alt={`Book${index + 1}`} style={{ maxWidth: '100%' }} />
-                            </Grid>
-                            <Grid item xs={5} pl={3}>
-                            <Typography variant="body1" sx={{ color: 'blue' }}>{product.name}</Typography>
-                            <Typography variant="body1">x {product.quantity}</Typography>
-                            </Grid>
-                            <Grid item xs={4}>
-                            <Typography variant="body1" sx={{ color: 'blue' }}>Unit Price: {product.unitprice} đ</Typography>
-                            <Typography variant="body1" sx={{ color: 'blue' }}>Price: {product.unitprice * product.quantity} đ</Typography>
-                            </Grid>
-                        </Grid>
-                        ))}
-                    </Grid>
-                </Grid>
-            </Grid>
+            <HeaderBar />
+            {items}
         </div>
     );
 

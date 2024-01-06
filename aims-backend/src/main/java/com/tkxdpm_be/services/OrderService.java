@@ -4,6 +4,8 @@ import com.tkxdpm_be.entities.Media;
 import com.tkxdpm_be.entities.Order;
 import com.tkxdpm_be.entities.OrderItem;
 import com.tkxdpm_be.entities.OrderShipping;
+import com.tkxdpm_be.models.dtos.MediaTO;
+import com.tkxdpm_be.models.dtos.OrderDTO;
 import com.tkxdpm_be.models.requests.MediaRequest;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.models.responses.OrderResponse;
@@ -33,6 +35,8 @@ public class OrderService {
 
     @Autowired
     OrderItemRepository orderItemRepository;
+    @Autowired
+    MediaRepository mediaRepository;
 
     @Autowired
     MediaRepository mediaRepository;

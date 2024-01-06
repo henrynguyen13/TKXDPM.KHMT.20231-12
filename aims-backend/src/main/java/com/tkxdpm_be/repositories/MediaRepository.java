@@ -14,5 +14,6 @@ public interface MediaRepository extends JpaRepository<Media, Long>, JpaSpecific
 {
 @Query(value = "select m.* from medias m where (:title is null or m.title = :title)", nativeQuery = true)
 List<Media> getAllMedia(String title);
+Media findById(long id);
 
 }
