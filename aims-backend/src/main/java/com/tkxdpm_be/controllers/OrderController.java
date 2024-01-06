@@ -1,6 +1,5 @@
 package com.tkxdpm_be.controllers;
 
-import com.tkxdpm_be.models.dtos.OrderDTO;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.models.responses.OrderResponse;
 import com.tkxdpm_be.services.OrderService;
@@ -9,8 +8,6 @@ import model.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import utils.ApiException;
-
-import java.util.List;
 
 import java.util.List;
 
@@ -30,10 +27,24 @@ public class OrderController {
         return response;
     }
 
+    @GetMapping("detail/{order-id}")
+    public BaseResponse<OrderResponse> getDetail(@PathVariable(name = "order-id") Long orderId) throws ApiException {
+        BaseResponse<OrderResponse> response = new BaseResponse<>();
+        response.setData(this.orderService.getDetail(orderId));
+        return response;
+    }
+
     @PostMapping
-    public BaseResponse<String> createOrder(@RequestBody OrderRequest request) {
-        BaseResponse<String> response = new BaseResponse<>();
+    public BaseResponse<Long> createOrder(@RequestBody OrderRequest request) {
+        BaseResponse<Long> response = new BaseResponse<>();
         response.setData(this.orderService.createOrder(request));
+        return response;
+    }
+
+    @PatchMapping("/{order-id}/payment-success")
+    public BaseResponse<Long> paymentSuccess(@PathVariable(name = "order-id") Long orderId) throws ApiException {
+        BaseResponse<Long> response = new BaseResponse<>();
+        response.setData(this.orderService.paymentSuccess(orderId));
         return response;
     }
 

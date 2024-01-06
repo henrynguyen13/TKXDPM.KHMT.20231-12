@@ -45,8 +45,8 @@ export default function DeliveryPage() {
       };
       const response = await OrderService.createOrder(request);
       console.log("---------", response);
-      if (response?.data?.data === "Success") {
-        navigate("/invoice");
+      if (response?.data?.message === "Success") {
+        navigate(`/invoice/${response?.data?.data}`);
       }
     } catch (error) {
       console.error("Error create order:", error);

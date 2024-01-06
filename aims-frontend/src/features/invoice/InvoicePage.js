@@ -11,7 +11,8 @@ import { PaymentService } from "../../services/payment.service";
 import HeaderBar from "../../components/layout/HeaderBar";
 import { getInvoiceById } from "../../APIs/InvoiceAPIs";
 import { getAllMediaAPI } from "../../APIs/MediaAPIs";
-
+import { useParams } from "react-router-dom";
+import { OrderService } from "../../services/order.service";
 const productInfo = [
   {
     name: "Book 1",
@@ -31,16 +32,19 @@ const productInfo = [
 ];
 
 const InvoicePage = () => {
+  const { orderId } = useParams();
   const [shipping, setShipping] = useState();
   let [res, setRes] = useState({});
   let [medias, setListMedias] = useState([]);
   useEffect(() => {
-    getInvoiceById(1).then((res) => {
-      setRes(res);
-    });
-    getAllMediaAPI().then((res) => {
-      setListMedias(res);
-    });
+    console.log("id", orderId);
+    const getOrderById = async () => {
+      const response = await OrderService.getOrderById(orderId);
+      console.log("-------", response);
+      setRes(response?.data?.data);
+      setShipping(response?.data?.data?.order);
+    };
+    getOrderById();
   }, []);
 
   const subtotal = productInfo.reduce(
@@ -87,8 +91,12 @@ const InvoicePage = () => {
     <div>
       <HeaderBar />
       <Box mt={5} pl={5}>
-        <Typography variant="h4" color={"#209ed4"}>
-          INVOICE
+        <Typography
+          variant="h4"
+          sx={{ marginLeft: 11, fontWeight: 600 }}
+          color={"#209ed4"}
+        >
+          Hóa đơn
         </Typography>
       </Box>
       <Grid mt={5} container>
@@ -248,6 +256,12 @@ const InvoicePage = () => {
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
+              VAT(10%):
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
+            >
               Shipping Fees:
             </Typography>
             <Typography
@@ -262,26 +276,32 @@ const InvoicePage = () => {
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {subtotal} đ
+              {shipping?.originPrice} đ
             </Typography>
             <Typography
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {shippingFees} đ
+              {(shipping?.originPrice * 10) / 100} đ
             </Typography>
             <Typography
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {total} đ
+              {shipping?.shippingFee} đ
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
+            >
+              {shipping?.totalAmount} đ
             </Typography>
           </Grid>
           <Grid xs={3}></Grid>
         </Grid>
       </Box>
 
-      <Box display="flex" justifyContent="center">
+      <Box display="flex" justifyContent="center" sx={{ margin: 2 }}>
         <Button
           sx={{
             backgroundColor: "#209ed4",
@@ -289,7 +309,7 @@ const InvoicePage = () => {
             borderRadius: "10px",
           }}
         >
-          <Typography>Confirm order</Typography>
+          <Typography>Xác nhận thanh toán</Typography>
         </Button>
       </Box>
     </div>
