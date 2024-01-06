@@ -5,6 +5,9 @@ import com.tkxdpm_be.entities.Order;
 import com.tkxdpm_be.entities.OrderItem;
 import com.tkxdpm_be.entities.OrderShipping;
 
+import com.tkxdpm_be.models.dtos.MediaInOrderDTO;
+import com.tkxdpm_be.models.dtos.OrderInfoDTO;
+import com.tkxdpm_be.models.dtos.OrderItemDto;
 import com.tkxdpm_be.models.requests.MediaRequest;
 import com.tkxdpm_be.models.requests.OrderRequest;
 import com.tkxdpm_be.models.responses.OrderResponse;
@@ -62,16 +65,12 @@ public class OrderService {
         Double originPrice = 0d, totalPrice, vat;
         List<OrderItem> orderItems = new ArrayList<>();
         for (MediaRequest media : orderRequest.getMedias()) {
-            originPrice += media.getPrice();
+            originPrice += media.getPrice() * media.getQuantity();
             OrderItem orderItem = new OrderItem();
             orderItem.setOrderId(order.getId());
             orderItem.setQuantity(media.getQuantity());
             orderItem.setMediaId(media.getId());
             orderItems.add(orderItem);
-            Optional<Media> oMedia = this.mediaRepository.findById(media.getId());
-            Media iMedia = oMedia.orElse(new Media());
-            iMedia.setQuantityAvailable(iMedia.getQuantityAvailable() - media.getQuantity());
-            this.mediaRepository.save(iMedia);
         }
         this.orderItemRepository.saveAll(orderItems);
         vat = originPrice * 0.1d;
@@ -84,8 +83,9 @@ public class OrderService {
     }
 
     public Double getShippingFee(List<MediaRequest> medias, String city, boolean isRush) {
+        System.out.println(medias);
         Double totalPrice = 0d;
-        Double shippingFeePrice = 0d;
+        double shippingFeePrice = 0d;
         Double maxWeight = 0d;
         int quantity = medias.size();
         for (MediaRequest media : medias) {
@@ -107,19 +107,6 @@ public class OrderService {
         }
     }
 
-    public List<OrderResponse> getHistoryOrder(Long userId) {
-        List<OrderResponse> responses = new ArrayList<>();
-        List<Order> orders = this.orderRepository.findByUserId(userId);
-        for (Order order : orders) {
-            OrderResponse response = new OrderResponse();
-            response.setOrder(order);
-            OrderShipping orderShipping = this.orderShippingRepository.findById(order.getOrderShippingId()).get();
-            response.setOrderShipping(orderShipping);
-            responses.add(response);
-        }
-        return responses;
-    }
-
     public Long cancelOrder(Long orderId) throws ApiException {
         Optional<Order> oOrder = this.orderRepository.findById(orderId);
         if (oOrder.isEmpty()) {
@@ -129,15 +116,53 @@ public class OrderService {
         this.orderRepository.deleteById(orderId);
         return orderId;
     }
-
-    public Long paymentSuccess(Long orderId) throws ApiException {
-        Optional<Order> oOrder = this.orderRepository.findById(orderId);
-        if (oOrder.isEmpty()) {
-            throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
-        }
-        Order order = oOrder.get();
-        order.setStatus(1);
-        this.orderRepository.save(order);
-        return orderId;
+    public void paymentSuccess(Long orderId) throws ApiException {
+        Order order = orderRepository.findById(orderId).orElseThrow();
+        order.setStatus(1); // Status = 1 đại diện cho đơn hàng đã được thanh toán
+        orderRepository.save(order);
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
+        orderItemList.forEach(item -> {
+            Media media = mediaRepository.findById(item.getMediaId()).orElseThrow();
+            int quantityAvailableRemain = media.getQuantityAvailable() - item.getQuantity();
+            media.setQuantityAvailable(Math.max(quantityAvailableRemain, 0));
+            mediaRepository.save(media);
+        });
+    }
+    public List<OrderInfoDTO> getHistoryOrder(Long userId) {
+        List<OrderInfoDTO> listOrderResponse = new ArrayList<>();
+        List<Order> listOrder = orderRepository.findByUserIdAndStatus(userId, 1);
+        listOrder.forEach(order -> {
+            OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
+            orderInfoDTO.setId(order.getId());
+            List<OrderItem> orderItemList = orderItemRepository.findByOrderId(order.getId());
+            List<MediaInOrderDTO> listMediaInOrder = new ArrayList<>();
+            orderItemList.forEach(orderItem -> {
+                Media media = mediaRepository.findById(orderItem.getMediaId()).orElseThrow();
+                MediaInOrderDTO mediaInOrderDTO = new MediaInOrderDTO();
+                mediaInOrderDTO.setId(media.getId());
+                mediaInOrderDTO.setMainImg(media.getImageUrl());
+                mediaInOrderDTO.setTitle(media.getTitle());
+                mediaInOrderDTO.setQuantity(orderItem.getQuantity());
+                mediaInOrderDTO.setPrice(media.getPrice());
+                listMediaInOrder.add(mediaInOrderDTO);
+            });
+            orderInfoDTO.setListProduct(listMediaInOrder);
+            OrderShipping orderShipping = orderShippingRepository.findById(order.getOrderShippingId()).orElseThrow();
+            orderInfoDTO.setName(orderShipping.getName());
+            orderInfoDTO.setPhone(orderShipping.getPhone());
+            orderInfoDTO.setCity(orderShipping.getCity());
+            orderInfoDTO.setAddress(orderShipping.getAddress());
+            orderInfoDTO.setShippingInstruction(orderShipping.getShippingInstruction());
+            orderInfoDTO.setShippingMethod(orderShipping.getShippingMethod());
+            orderInfoDTO.setShipmentDetails(orderShipping.getShipmentDetails());
+            orderInfoDTO.setDeliveryInstruction(orderShipping.getDeliveryInstruction());
+            orderInfoDTO.setDeliveryTime(orderShipping.getDeliveryTime());
+            orderInfoDTO.setOriginPrice(order.getOriginPrice());
+            orderInfoDTO.setVat(order.getVat());
+            orderInfoDTO.setShippingFee(order.getShippingFee());
+            orderInfoDTO.setTotalAmount(order.getTotalAmount());
+            listOrderResponse.add(orderInfoDTO);
+        });
+        return listOrderResponse;
     }
 }

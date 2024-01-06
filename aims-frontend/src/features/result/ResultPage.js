@@ -2,15 +2,18 @@ import HeaderBar from '../../components/layout/HeaderBar';
 import './ResultPage.css';
 import SuccessIcon from '../../assets/images/successIcon.png';
 import { useLocation } from 'react-router-dom';
-import { formatNumber } from '../../common/utils';
+import { convertDateTimeFormat, formatNumber } from '../../common/utils';
 import { CartService } from '../../services/cart.service';
 import { useEffect } from 'react';
 import { useNumProduct } from '../carts/NumProductInCartContext';
+import { OrderService } from '../../services/order.service';
 
 const ResultPage = () => {
 
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
+    const orderId = localStorage.getItem("orderId");
+    console.log(orderId);
 
     const vnp_TransactionNo = queryParams.get('vnp_TransactionNo');
     const vnp_Amount = queryParams.get('vnp_Amount');
@@ -27,9 +30,19 @@ const ResultPage = () => {
         }
     };
 
+    const paymentSuccess = async () => {
+        try {
+          await OrderService.orderSuccess(orderId);
+        } catch (err) {
+          console.error("Error:", err);
+        }
+    };
+
     useEffect(() => {
         updateNumProduct(0);
-        deleteCart();  
+        paymentSuccess();
+        deleteCart();
+        localStorage.removeItem("orderId");
     }, []);
 
     return (
@@ -55,7 +68,7 @@ const ResultPage = () => {
                         </div>
                         <div className='info-item'>
                             <div>Thời gian giao dịch:</div>
-                            <div>{vnp_PayDate}</div>
+                            <div>{convertDateTimeFormat(vnp_PayDate)}</div>
                         </div>
                     </div>
                 </div>

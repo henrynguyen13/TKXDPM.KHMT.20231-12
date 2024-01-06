@@ -3,19 +3,21 @@ import React, { useEffect } from "react";
 import HeaderBar from "../../components/layout/HeaderBar";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
-import { useCart } from "../carts/CartContext";
 import { formatNumber } from "../../common/utils";
 import { OrderService } from "../../services/order.service";
 import ToastUtil from "../../common/utils";
 import { useNavigate } from "react-router-dom";
+import { CartService } from "../../services/cart.service";
 
 export default function DeliveryPage() {
-  const { subtotal, listMedia } = useCart();
+  const [listMedia, setListMedia] = useState([]);
+  const [subtotal, setSubtotal] = useState(0);
   const [isExpressDelivery, setIsExpressDelivery] = useState(false);
   const [shippingFee, setShippingFee] = useState(0);
   const [minTime, setMinTime] = useState("");
+  const [city, setCity] = useState("An Giang");
 
-  const [selectedShippingMethod, setSelectedShippingMethod] = useState("");
+  const [selectedShippingMethod, setSelectedShippingMethod] = useState("Giao hàng tiêu chuẩn");
   const navigate = useNavigate();
   const {
     register,
@@ -23,6 +25,52 @@ export default function DeliveryPage() {
     getValues,
     formState: { errors },
   } = useForm();
+
+  const getListMediaCart = async () => {
+    try {
+      const response = await CartService.getAllMediaInCart();
+      setListMedia(response.data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
+  const getTotalPriceInCart = async () => {
+    try {
+      const response = await CartService.getTotalPriceInCart();
+      setSubtotal(Math.round(response.data));
+    } catch (err) {
+        console.error('Error:', err);
+    }
+  }
+
+  const getShippingFee = async () => {
+    try {
+      const res = {
+        orderShipping: {
+          city: city,
+        },
+        medias: listMedia,
+        userId: "1",
+      };
+      const isRush = selectedShippingMethod === 'Giao hàng tiêu chuẩn' ? false : true;
+      const response = await OrderService.calculateShippingFee(res, isRush);
+      setShippingFee(response.data.data);
+    } catch (error) {
+      console.error("Error calculating shipping fee:", error);
+    }
+  }
+
+  useEffect(() => {
+     getListMediaCart();
+     getTotalPriceInCart();
+  }, []);
+
+  useEffect(() => {
+    if (listMedia.length > 0) {
+      getShippingFee();
+    }
+  }, [listMedia, selectedShippingMethod]);
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -63,8 +111,14 @@ export default function DeliveryPage() {
         medias: listMedia,
         userId: "1",
       };
+      setCity(selectedCity);
+      if (selectedShippingMethod === 'Giao hàng nhanh' && selectedCity !== 'Hà Nội') {
+        setIsExpressDelivery(false);
+        setSelectedShippingMethod("Giao hàng tiêu chuẩn");
+      }
       console.log("request", res);
-      const response = await OrderService.calculateShippingFee(res, true);
+      const isRush = selectedShippingMethod === 'Giao hàng tiêu chuẩn' ? false : true;
+      const response = await OrderService.calculateShippingFee(res, isRush);
       console.log("respone", response);
       setShippingFee(response.data.data);
     } catch (error) {
@@ -78,6 +132,15 @@ export default function DeliveryPage() {
       ToastUtil.showToastError(
         "Sản phẩm trong giỏ hàng không hỗ trợ giao hàng nhanh"
       );
+      setIsExpressDelivery(false);
+      setSelectedShippingMethod("Giao hàng tiêu chuẩn");
+      return;
+    } else if (city !== 'Hà Nội') {
+      ToastUtil.showToastError(
+        "Không hỗ trợ giao hàng nhanh ở tỉnh/thành phố bạn chọn"
+      );
+      setIsExpressDelivery(false);
+      setSelectedShippingMethod("Giao hàng tiêu chuẩn");
       return;
     }
     setIsExpressDelivery(true);
@@ -269,6 +332,7 @@ export default function DeliveryPage() {
                       setIsExpressDelivery(false);
                       setSelectedShippingMethod("Giao hàng tiêu chuẩn");
                     }}
+                    checked={selectedShippingMethod === 'Giao hàng tiêu chuẩn'}
                   />
                   <label className="min-w-[250px]" htmlFor="standardDelivery">
                     Giao hàng tiêu chuẩn
@@ -284,6 +348,7 @@ export default function DeliveryPage() {
                     onClick={() => {
                       checkExpressMethod();
                     }}
+                    checked={selectedShippingMethod === 'Giao hàng nhanh'}
                   />
                   <label className="min-w-[250px]" htmlFor="expressDelivery">
                     Giao hàng nhanh
@@ -322,8 +387,16 @@ export default function DeliveryPage() {
                       id="deliveryTime"
                       min={minTime}
                       placeholder="Thời gian nhận hàng"
-                      {...register("deliveryTime", {})}
+                      {...register("deliveryTime", {
+                        required: {
+                          value: true,
+                          message: "Thời gian nhận hàng nhanh là trường bắt buộc",
+                        },
+                      })}
                     />
+                  </div>
+                  <div className="ml-[255px] text-[#d04242] mb-2">
+                    {errors?.deliveryTime?.message}
                   </div>
                 </>
               )}
@@ -352,7 +425,7 @@ export default function DeliveryPage() {
                 </tr>
                 <tr>
                   <td>Phí vận chuyển</td>
-                  <td>{shippingFee}đ</td>
+                  <td>{formatNumber(shippingFee)}đ</td>
                 </tr>
                 <tr>
                   <td>Tổng tiền</td>

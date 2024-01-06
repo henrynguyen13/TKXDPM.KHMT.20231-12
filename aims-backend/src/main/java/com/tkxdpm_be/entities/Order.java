@@ -3,6 +3,8 @@ package com.tkxdpm_be.entities;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @Entity

@@ -43,6 +43,7 @@ export default function HeaderBar() {
             className="ml-8 cursor-pointer"
             src={avatar}
             sx={{ width: 50, height: 50 }}
+            onClick={() => navigate("/history")}
           />
         </div>
       </div>

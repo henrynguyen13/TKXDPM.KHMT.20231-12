@@ -4,38 +4,19 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Box } from "@mui/material";
 import Button from "@mui/material/Button";
-import book1 from "../../assets/images/book1.jpg";
-import book2 from "../../assets/images/book2.jpg";
-import book3 from "../../assets/images/book3.jpg";
-import { PaymentService } from "../../services/payment.service";
 import HeaderBar from "../../components/layout/HeaderBar";
-import { getInvoiceById } from "../../APIs/InvoiceAPIs";
-import { getAllMediaAPI } from "../../APIs/MediaAPIs";
 import { useParams } from "react-router-dom";
 import { OrderService } from "../../services/order.service";
-const productInfo = [
-  {
-    name: "Book 1",
-    quantity: 2,
-    unitprice: 50000,
-  },
-  {
-    name: "Book 2",
-    quantity: 1,
-    unitprice: 30000,
-  },
-  {
-    name: "Book 3",
-    quantity: 3,
-    unitprice: 60000,
-  },
-];
+import { formatDateTime, formatNumber } from "../../common/utils";
+import { CartService } from "../../services/cart.service";
+import { PaymentService } from "../../services/payment.service";
 
 const InvoicePage = () => {
   const { orderId } = useParams();
   const [shipping, setShipping] = useState();
   let [res, setRes] = useState({});
   let [medias, setListMedias] = useState([]);
+
   useEffect(() => {
     console.log("id", orderId);
     const getOrderById = async () => {
@@ -45,14 +26,36 @@ const InvoicePage = () => {
       setShipping(response?.data?.data?.order);
     };
     getOrderById();
+    getListMediaCart();
   }, []);
 
-  const subtotal = productInfo.reduce(
-    (totals, product) => totals + product.unitprice * product.quantity,
-    0
-  );
-  const shippingFees = 0.1 * subtotal;
-  const total = subtotal + shippingFees;
+  const getListMediaCart = async () => {
+    try {
+      const response = await CartService.getAllMediaInCart();
+      setListMedias(response.data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
+  const [urlPayment, setUrlPayment] = useState('');
+
+  const getUrlPayment = async (totalAmount) => {
+    try {
+      const response = await PaymentService.getPayUrl(totalAmount);
+      setUrlPayment(response.data.data);
+    } catch (err) {
+      console.error("Error:", err);
+    }
+  };
+
+  const handleConfirmOrder = () => {
+    getUrlPayment(shipping?.totalAmount);
+    if (urlPayment !== '') {
+      localStorage.setItem("orderId", orderId);
+      window.location.assign(`${urlPayment}`)
+    };
+  }
 
   let mediasToShow =
     medias && medias.length > 0
@@ -71,15 +74,15 @@ const InvoicePage = () => {
                   {media.title}
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  x SL
+                  Số lượng: {media.quantity}
                 </Typography>
               </Grid>
               <Grid item xs={4}>
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  Unit Price: {media.price} đ
+                  Đơn giá: {formatNumber(media.price)} VND
                 </Typography>
                 <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                  Price: XX đ
+                  Tổng cộng: {formatNumber(media.price * media.quantity)} VND
                 </Typography>
               </Grid>
             </Grid>
@@ -211,7 +214,7 @@ const InvoicePage = () => {
           ) : null}
           {res?.orderShipping?.deliveryTime ? (
             <Typography variant="body1" pb={5} sx={{ fontWeight: "bold" }}>
-              {res?.orderShipping?.deliveryTime || ""}{" "}
+              {formatDateTime(res?.orderShipping?.deliveryTime) || ""}{" "}
             </Typography>
           ) : null}
         </Grid>
@@ -276,25 +279,25 @@ const InvoicePage = () => {
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {shipping?.originPrice} đ
+              {formatNumber(shipping?.originPrice)} VND
             </Typography>
             <Typography
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {(shipping?.originPrice * 10) / 100} đ
+              {formatNumber((shipping?.originPrice * 10) / 100)} VND
             </Typography>
             <Typography
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {shipping?.shippingFee} đ
+              {formatNumber(shipping?.shippingFee)} VND
             </Typography>
             <Typography
               variant="body1"
               sx={{ width: "250px", textAlign: "left", fontWeight: "bold" }}
             >
-              {shipping?.totalAmount} đ
+              {formatNumber(shipping?.totalAmount)} VND
             </Typography>
           </Grid>
           <Grid xs={3}></Grid>
@@ -308,6 +311,7 @@ const InvoicePage = () => {
             color: "white",
             borderRadius: "10px",
           }}
+          onClick={handleConfirmOrder}
         >
           <Typography>Xác nhận thanh toán</Typography>
         </Button>

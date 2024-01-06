@@ -57,4 +57,9 @@ public class CartController {
         Integer numMediaInCart = cartService.getNumMediaInCart(userId);
         return ResponseEntity.ok().body(numMediaInCart);
     }
+    @GetMapping("/totalPrice/{user-id}")
+    public ResponseEntity<Double> getTotalPriceInCart(@PathVariable(name = "user-id") Long userId) {
+        Double totalPriceInCart = cartService.getTotalPriceInCart(userId);
+        return ResponseEntity.ok().body(totalPriceInCart);
+    }
 }

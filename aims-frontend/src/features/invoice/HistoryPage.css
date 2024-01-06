@@ -1,0 +1,115 @@
+.history-order-page {
+    margin: 30px 50px;
+    box-sizing: border-box;
+}
+.history-order-page .top-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 50px;
+}
+.history-order-page .name-page {
+    font-size: 30px;
+    font-weight: bold;
+}
+.history-order-page .num-order {
+    font-size: 23px;
+    font-weight: 500;
+}
+.history-order-page .list-order-container {
+    width: 100%;
+}
+.history-order-page table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+.history-order-page .col-name {
+    background-color: #209ed4;
+}
+.history-order-page .col-name th {
+    color: white;
+    padding: 13px 0;
+    text-align: center;
+    font-weight: 500;
+    font-size: 17px;
+}
+.history-order-page td {
+    vertical-align: top;
+    text-align: center;
+    font-weight: 500;
+    padding: 20px 0;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #cccccc;
+    font-size: 17px;
+}
+.history-order-page .record {
+    background-color: white;
+}
+.history-order-page .col-name th:first-child,
+.history-order-page .record td:first-child {
+    width: 150px;
+}
+.history-order-page .list-product {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.history-order-page .product-item {
+    display: flex;
+    gap: 20px;
+}
+.history-order-page .product-img {
+    width: 150px;
+}
+.history-order-page .info-product-order {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 350px;
+}
+.history-order-page .product-name {
+    font-size: 20px;
+    text-align: left;
+}
+.history-order-page .info-field {
+    display: flex;
+    justify-content: space-between;
+    width: 250px;
+}
+.history-order-page .info-order {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.history-order-page .info-item {
+    display: flex;
+}
+.history-order-page div {
+    text-align: left;
+}
+.history-order-page .info-item div {
+    color: #333333;
+}
+.history-order-page .key {
+    margin-right: 30px;
+    font-weight: bold;
+    color: black !important;
+    display: flex;
+    flex-wrap: nowrap;
+}
+.history-order-page .cancel-order-btn {
+    background-color: #db2626;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    width: 150px;
+    border-radius: 8px;
+    padding: 8px 0;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.history-order-page .cancel-order-btn:hover {
+    background-color: #9a1313;
+}
