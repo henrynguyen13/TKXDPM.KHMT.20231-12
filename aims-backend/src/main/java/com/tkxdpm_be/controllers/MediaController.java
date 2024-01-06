@@ -1,12 +1,15 @@
 package com.tkxdpm_be.controllers;
 
 import com.tkxdpm_be.entities.Media;
-import com.tkxdpm_be.enums.MediaType;
+import com.tkxdpm_be.models.dtos.MediaDto;
 import com.tkxdpm_be.services.MediaService;
 import model.BaseResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import utils.ApiException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @CrossOrigin(allowedHeaders = "*", origins = "*")
@@ -35,5 +38,19 @@ public class MediaController {
         BaseResponse<Media> response = new BaseResponse<>();
         response.setData(this.mediaService.findById(id));
         return response;
+    }
+
+    @GetMapping(value = "/getAll")
+    public List<MediaDto> getAllMediaV2() {
+        List<Media> mediaList = mediaService.findAllMediaV2();
+        List<MediaDto> mediaDtos = new ArrayList<>();
+        for (Media media : mediaList) {
+            MediaDto mediaDto = new MediaDto();
+            mediaDto.setTitle(media.getTitle());
+            mediaDto.setPrice(media.getPrice());
+            mediaDto.setImageUrl(media.getImageUrl());
+            mediaDtos.add(mediaDto);
+        }
+        return mediaDtos;
     }
 }

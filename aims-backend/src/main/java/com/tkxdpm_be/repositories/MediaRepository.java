@@ -1,6 +1,7 @@
 package com.tkxdpm_be.repositories;
 
 import com.tkxdpm_be.entities.Media;
+import com.tkxdpm_be.entities.OrderItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

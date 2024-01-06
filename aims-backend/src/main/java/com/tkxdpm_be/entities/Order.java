@@ -18,4 +18,5 @@ public class Order extends BaseEntity {
     private Double originPrice;
     private Double vat;
     private Double shippingFee;
+    private Integer status;
 }
