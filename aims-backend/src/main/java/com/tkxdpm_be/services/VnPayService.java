@@ -1,15 +1,31 @@
 package com.tkxdpm_be.services;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.tkxdpm_be.configs.VnPayConfig;
-import com.tkxdpm_be.models.dtos.PaymentTransaction;
+import com.tkxdpm_be.entities.PaymentTransaction;
+import com.tkxdpm_be.repositories.PaymentTransactionRepository;
+import com.tkxdpm_be.utils.Utils;
+import model.BaseResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import utils.ApiException;
 import utils.ERROR;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -20,6 +36,12 @@ public class VnPayService {
 
     @Value("${vnpay.redirect.url}")
     String vnPayRedirectUrl;
+
+    @Autowired
+    PaymentTransactionRepository paymentTransactionRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     public String generatePayUrl(int money) {
         try {
@@ -62,12 +84,7 @@ public class VnPayService {
             vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
             cld.add(Calendar.MINUTE, 15);
             String vnp_ExpireDate = formatter.format(cld.getTime());
-            //Add Params of 2.1.0 Version
             vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
-            //Billing
-//            vnp_Params.put("vnp_Bill_Mobile", req.getParameter("txt_billing_mobile"));
-//            vnp_Params.put("vnp_Bill_Email", req.getParameter("txt_billing_email"));
-//            String fullName = (req.getParameter("txt_billing_fullname")).trim();
             String fullName = "Khánh PD";
             if (fullName != null && !fullName.isEmpty()) {
                 int idx = fullName.indexOf(' ');
@@ -77,21 +94,6 @@ public class VnPayService {
                 vnp_Params.put("vnp_Bill_LastName", lastName);
 
             }
-//            vnp_Params.put("vnp_Bill_Address", req.getParameter("txt_inv_addr1"));
-//            vnp_Params.put("vnp_Bill_City", req.getParameter("txt_bill_city"));
-//            vnp_Params.put("vnp_Bill_Country", req.getParameter("txt_bill_country"));
-//            if (req.getParameter("txt_bill_state") != null && !req.getParameter("txt_bill_state").isEmpty()) {
-//                vnp_Params.put("vnp_Bill_State", req.getParameter("txt_bill_state"));
-//            }
-            // Invoice
-//            vnp_Params.put("vnp_Inv_Phone", req.getParameter("txt_inv_mobile"));
-//            vnp_Params.put("vnp_Inv_Email", req.getParameter("txt_inv_email"));
-//            vnp_Params.put("vnp_Inv_Customer", req.getParameter("txt_inv_customer"));
-//            vnp_Params.put("vnp_Inv_Address", req.getParameter("txt_inv_addr1"));
-//            vnp_Params.put("vnp_Inv_Company", req.getParameter("txt_inv_company"));
-//            vnp_Params.put("vnp_Inv_Taxcode", req.getParameter("txt_inv_taxcode"));
-//            vnp_Params.put("vnp_Inv_Type", req.getParameter("cbo_inv_type"));
-            //Build data to hash and querystring
             List fieldNames = new ArrayList(vnp_Params.keySet());
             Collections.sort(fieldNames);
             StringBuilder hashData = new StringBuilder();
@@ -125,20 +127,118 @@ public class VnPayService {
         }
     }
 
+    public String refund(Long orderId) throws IOException, ParseException {
+        Optional<PaymentTransaction> oPaymentTransaction = this.paymentTransactionRepository.findByOrderId(orderId);
+        PaymentTransaction paymentTransaction = oPaymentTransaction.get();
+        long amountVNPay = paymentTransaction.getAmount() * 100L;
+
+        String vnp_TxnRef = paymentTransaction.getTransactionNum();
+        String vnp_RequestId = VnPayConfig.getRandomNumber(8);
+        String vnp_IpAddr = VnPayConfig.getIpAddress();
+
+        String vnp_TmnCode = VnPayConfig.vnp_TmnCode;
+        String orderInfor = "Refund";
+
+        Map<String, String> vnp_Params = new HashMap<>();
+        vnp_Params.put("vnp_Version", VERSION);
+        vnp_Params.put("vnp_Command", "refund");
+        vnp_Params.put("vnp_TmnCode", vnp_TmnCode);
+        vnp_Params.put("vnp_Amount", String.valueOf(amountVNPay));
+        vnp_Params.put("vnp_OrderInfo", orderInfor);
+        vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
+        vnp_Params.put("vnp_TransactionType", "02");
+        vnp_Params.put("vnp_TxnRef", vnp_TxnRef);
+        vnp_Params.put("vnp_CreateBy", "aims");
+        vnp_Params.put("vnp_RequestId", vnp_RequestId);
+
+        Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+//        String vnp_TransactionDate = Utils.convertDateFormat(paymentTransaction.getCreatedAt());
+        vnp_Params.put("vnp_TransactionDate", paymentTransaction.getCreatedAt());
+        String vnp_CreateDate = formatter.format(cld.getTime());
+        vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+
+        String hash_Data= String.join("|", vnp_RequestId, VERSION, "refund", vnp_TmnCode,
+                "02", vnp_TxnRef, String.valueOf(amountVNPay), "", paymentTransaction.getCreatedAt(),
+                "aims", vnp_CreateDate, vnp_IpAddr, orderInfor);
+
+        String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hash_Data.toString());
+
+        vnp_Params.put("vnp_SecureHash", vnp_SecureHash);
+
+        URL url = new URL(VnPayConfig.vnp_ApiUrl);
+
+        List fieldNames = new ArrayList(vnp_Params.keySet());
+        Collections.sort(fieldNames);
+        StringBuilder hashData = new StringBuilder();
+        StringBuilder query = new StringBuilder();
+        Iterator itr = fieldNames.iterator();
+        while (itr.hasNext()) {
+            String fieldName = (String) itr.next();
+            String fieldValue = (String) vnp_Params.get(fieldName);
+            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+                //Build hash data
+                hashData.append(fieldName);
+                hashData.append('=');
+                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                //Build query
+                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
+                query.append('=');
+                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+                if (itr.hasNext()) {
+                    query.append('&');
+                    hashData.append('&');
+                }
+            }
+        }
+        String queryUrl = query.toString();
+        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+        String refundUrl = VnPayConfig.vnp_ApiUrl + "?" + queryUrl;
+        return refundUrl;
+
+//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//
+//        connection.setRequestMethod("POST");
+//        connection.setRequestProperty("Content-Type", "application/json");
+//        connection.setDoOutput(true);
+//        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+//        Gson gson = new Gson();
+//        Type typeObject = new TypeToken<HashMap>() {}.getType();
+//        String gsonData = gson.toJson(vnp_Params, typeObject);
+//        wr.writeBytes(gsonData);
+//        wr.flush();
+//        wr.close();
+//        int responseCode = connection.getResponseCode();
+//        System.out.println("nSending 'POST' request to URL : " + url);
+//        System.out.println("Post Data : " + vnp_Params);
+//        System.out.println("Response Code : " + responseCode);
+//        BufferedReader in = new BufferedReader(
+//                new InputStreamReader(connection.getInputStream()));
+//        String output;
+//        StringBuffer response = new StringBuffer();
+//        while ((output = in.readLine()) != null) {
+//            response.append(output);
+//        }
+//        in.close();
+//        System.out.println(response.toString());
+//        return response.toString();
+    }
+
     public void makePaymentTransaction(Map<String, String> response) throws ApiException {
         if (response == null) {
             return;
         }
 
         // Create Payment transaction
+        Long orderId = Long.valueOf(response.get("order_id"));
         String errorCode = response.get("vnp_TransactionStatus");
         String transactionId = response.get("vnp_TransactionNo");
         String transactionContent = response.get("vnp_OrderInfo");
         int amount = Integer.parseInt(response.get("vnp_Amount"));
         String createdAt = response.get("vnp_PayDate");
         PaymentTransaction trans = new
-                PaymentTransaction(errorCode, transactionId, transactionContent, amount, createdAt);
-
+                PaymentTransaction(orderId, errorCode, transactionId, transactionContent, amount, createdAt);
+        this.paymentTransactionRepository.save(trans);
         switch (trans.getErrorCode()) {
             case "00":
                 break;

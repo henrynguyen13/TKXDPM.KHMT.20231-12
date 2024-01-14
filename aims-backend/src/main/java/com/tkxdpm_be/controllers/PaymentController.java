@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import utils.ApiException;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -23,8 +25,15 @@ public class PaymentController {
         return response;
     }
 
+    @GetMapping("/refund/{order-id}")
+    public BaseResponse<String> refundPayment(@PathVariable(name = "order-id") Long orderId) throws IOException, ParseException {
+        BaseResponse<String> response = new BaseResponse<>();
+        response.setData(this.vnPayService.refund(orderId));
+        return response;
+    }
+
     @GetMapping
-    public BaseResponse<Map<String, String>> makePayment(Map<String, String> res) {
+    public BaseResponse<Map<String, String>> makePayment(@RequestBody Map<String, String> res) {
         BaseResponse<Map<String, String>> response = new BaseResponse<>();
         Map<String, String> result = new Hashtable<String, String>();
         try {
