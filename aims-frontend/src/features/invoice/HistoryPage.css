@@ -113,3 +113,13 @@
 .history-order-page .cancel-order-btn:hover {
     background-color: #9a1313;
 }
+.history-order-page .cancelled-btn {
+    background-color: #656464;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    width: 150px;
+    border-radius: 8px;
+    padding: 8px 0;
+}

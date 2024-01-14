@@ -47,7 +47,7 @@ public class OrderController {
         orderService.paymentSuccess(orderId);
     }
 
-    @DeleteMapping("/cancel-order/{order-id}")
+    @PutMapping("/cancel-order/{order-id}")
     public BaseResponse<Long> cancelOrder(@PathVariable(name = "order-id") Long orderId) throws ApiException {
         BaseResponse<Long> response = new BaseResponse<>();
         response.setData(this.orderService.cancelOrder(orderId));

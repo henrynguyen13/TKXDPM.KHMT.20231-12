@@ -26,7 +26,7 @@ export const OrderService = {
     return response;
   },
   cancelOrder: async (id) => {
-    const response = await axios.delete(`/orders/cancel-order/${id}`);
+    const response = await axios.put(`/orders/cancel-order/${id}`);
     return response;
   }
 };

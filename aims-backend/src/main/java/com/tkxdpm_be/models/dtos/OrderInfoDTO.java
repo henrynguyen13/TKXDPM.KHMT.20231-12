@@ -27,4 +27,5 @@ public class OrderInfoDTO {
     private Double vat;
     private Double shippingFee;
     private Double totalAmount;
+    private Integer status;
 }
