@@ -25,7 +25,8 @@ const HistoryPage = () => {
 
     const handleCancelOrder = async (id) => {
         try {
-          await OrderService.cancelOrder(id);
+          // eslint-disable-next-line no-unused-vars
+          const response = await OrderService.cancelOrder(id);
           toast.success("Hủy đơn hàng thành công", {
             position: toast.POSITION.TOP_CENTER,
             containerId: "cartToast",
@@ -139,9 +140,16 @@ const HistoryPage = () => {
                                         </div>
                                     </div>
                                 </td>
+                                { order.status === 1 && (
                                 <td style={{ width: "250px" }}>
                                     <div className="cancel-order-btn" onClick={() => handleCancelOrder(order.id)}>Hủy đơn hàng</div>
                                 </td>
+                                )}
+                                { order.status === 2 && (
+                                <td style={{ width: "250px" }}>
+                                    <div className="cancelled-btn">Đã hủy</div>
+                                </td>
+                                )}
                             </tr>
                             ))}
                         </tbody>

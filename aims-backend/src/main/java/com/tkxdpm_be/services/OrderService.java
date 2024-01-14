@@ -112,8 +112,17 @@ public class OrderService {
         if (oOrder.isEmpty()) {
             throw new ApiException(ERROR.RESOURCE_NOT_FOUND);
         }
-        this.orderItemRepository.deleteByOrderId(orderId);
-        this.orderRepository.deleteById(orderId);
+        Order order = oOrder.get();
+        order.setStatus(2); // Status = 2 đại diện cho đơn hàng đã hủy
+        orderRepository.save(order);
+
+        List<OrderItem> orderItemList = orderItemRepository.findByOrderId(orderId);
+        orderItemList.forEach(item -> {
+            Media media = mediaRepository.findById(item.getMediaId()).orElseThrow();
+            int quantityAvailableRemain = media.getQuantityAvailable() + item.getQuantity();
+            media.setQuantityAvailable(quantityAvailableRemain);
+            mediaRepository.save(media);
+        });
         return orderId;
     }
     public void paymentSuccess(Long orderId) throws ApiException {
@@ -130,10 +139,15 @@ public class OrderService {
     }
     public List<OrderInfoDTO> getHistoryOrder(Long userId) {
         List<OrderInfoDTO> listOrderResponse = new ArrayList<>();
-        List<Order> listOrder = orderRepository.findByUserIdAndStatus(userId, 1);
+        List<Order> listOrderPayed = orderRepository.findByUserIdAndStatus(userId, 1);
+        List<Order> listOrderCancelled = orderRepository.findByUserIdAndStatus(userId, 2);
+        List<Order> listOrder = new ArrayList<>();
+        listOrder.addAll(listOrderPayed);
+        listOrder.addAll(listOrderCancelled);
         listOrder.forEach(order -> {
             OrderInfoDTO orderInfoDTO = new OrderInfoDTO();
             orderInfoDTO.setId(order.getId());
+            orderInfoDTO.setStatus(order.getStatus());
             List<OrderItem> orderItemList = orderItemRepository.findByOrderId(order.getId());
             List<MediaInOrderDTO> listMediaInOrder = new ArrayList<>();
             orderItemList.forEach(orderItem -> {

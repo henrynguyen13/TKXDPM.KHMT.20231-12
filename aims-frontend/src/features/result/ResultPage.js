@@ -7,6 +7,7 @@ import { CartService } from '../../services/cart.service';
 import { useEffect } from 'react';
 import { useNumProduct } from '../carts/NumProductInCartContext';
 import { OrderService } from '../../services/order.service';
+import { PaymentService } from '../../services/payment.service';
 
 const ResultPage = () => {
 
@@ -19,6 +20,7 @@ const ResultPage = () => {
     const vnp_Amount = queryParams.get('vnp_Amount');
     const vnp_OrderInfo = queryParams.get('vnp_OrderInfo');
     const vnp_PayDate = queryParams.get('vnp_PayDate');
+    const vnp_TransactionStatus = queryParams.get('vnp_TransactionStatus');
 
     const { updateNumProduct } = useNumProduct();
 
@@ -38,8 +40,26 @@ const ResultPage = () => {
         }
     };
 
+    const makePayment = async () => {
+        try {
+            const paymentInfo = {
+                order_id: orderId,
+                vnp_TransactionStatus: vnp_TransactionStatus,
+                vnp_TransactionNo: vnp_TransactionNo,
+                vnp_OrderInfo: vnp_OrderInfo,
+                vnp_Amount: vnp_Amount,
+                vnp_PayDate: vnp_PayDate
+            };
+            // eslint-disable-next-line no-unused-vars
+            const response = await PaymentService.makePayment(paymentInfo);
+          } catch (err) {
+            console.error("Error:", err);
+          }
+    }
+
     useEffect(() => {
         updateNumProduct(0);
+        makePayment();
         paymentSuccess();
         deleteCart();
         localStorage.removeItem("orderId");

@@ -8,4 +8,8 @@ export const PaymentService = {
         });
         return response;
     },
+    makePayment: async (paymentInfo) => {
+        const response = await axios.get("/payments", paymentInfo);
+        return response;
+    }
 };
