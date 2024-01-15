@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import './HistoryPage.css';
 import { OrderService } from "../../services/order.service";
 import { formatNumber } from "../../common/utils";
+import { PaymentService } from "../../services/payment.service";
 
 const HistoryPage = () => {
 
@@ -27,6 +28,8 @@ const HistoryPage = () => {
         try {
           // eslint-disable-next-line no-unused-vars
           const response = await OrderService.cancelOrder(id);
+          // eslint-disable-next-line no-unused-vars
+          const responseRefund = await PaymentService.refund(id);
           toast.success("Hủy đơn hàng thành công", {
             position: toast.POSITION.TOP_CENTER,
             containerId: "cartToast",

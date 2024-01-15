@@ -60,11 +60,10 @@ const ResultPage = () => {
     }
 
     useEffect(() => {
-        updateNumProduct(0);
         makePayment();
         paymentSuccess();
         deleteCart();
-        localStorage.removeItem("orderId");
+        updateNumProduct(0);
     }, []);
 
     return (

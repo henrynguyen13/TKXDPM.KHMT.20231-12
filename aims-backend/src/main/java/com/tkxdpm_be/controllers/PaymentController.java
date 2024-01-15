@@ -34,6 +34,7 @@ public class PaymentController {
 
     @PostMapping
     public BaseResponse<Map<String, String>> makePayment(@RequestBody Map<String, String> res) {
+        System.out.println(res);
         BaseResponse<Map<String, String>> response = new BaseResponse<>();
         Map<String, String> result = new Hashtable<String, String>();
         try {
