@@ -25,14 +25,14 @@ public class PaymentController {
         return response;
     }
 
-    @GetMapping("/refund/{order-id}")
-    public BaseResponse<String> refundPayment(@PathVariable(name = "order-id") Long orderId) throws IOException, ParseException {
+    @PostMapping("/refund/{order-id}")
+    public BaseResponse<String> refundPayment(@PathVariable(name = "order-id") Long orderId) throws IOException, ParseException, ApiException {
         BaseResponse<String> response = new BaseResponse<>();
         response.setData(this.vnPayService.refund(orderId));
         return response;
     }
 
-    @GetMapping
+    @PostMapping
     public BaseResponse<Map<String, String>> makePayment(@RequestBody Map<String, String> res) {
         BaseResponse<Map<String, String>> response = new BaseResponse<>();
         Map<String, String> result = new Hashtable<String, String>();

@@ -21,6 +21,7 @@ const ResultPage = () => {
     const vnp_OrderInfo = queryParams.get('vnp_OrderInfo');
     const vnp_PayDate = queryParams.get('vnp_PayDate');
     const vnp_TransactionStatus = queryParams.get('vnp_TransactionStatus');
+    const vnp_TxnRef = queryParams.get('vnp_TxnRef');
 
     const { updateNumProduct } = useNumProduct();
 
@@ -48,7 +49,8 @@ const ResultPage = () => {
                 vnp_TransactionNo: vnp_TransactionNo,
                 vnp_OrderInfo: vnp_OrderInfo,
                 vnp_Amount: vnp_Amount,
-                vnp_PayDate: vnp_PayDate
+                vnp_PayDate: vnp_PayDate,
+                vnp_TxnRef: vnp_TxnRef
             };
             // eslint-disable-next-line no-unused-vars
             const response = await PaymentService.makePayment(paymentInfo);

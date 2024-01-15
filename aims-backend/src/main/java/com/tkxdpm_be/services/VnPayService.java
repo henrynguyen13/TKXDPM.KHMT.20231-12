@@ -1,27 +1,24 @@
 package com.tkxdpm_be.services;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.tkxdpm_be.configs.VnPayConfig;
 import com.tkxdpm_be.entities.PaymentTransaction;
+import com.tkxdpm_be.models.dtos.RefundResponse;
 import com.tkxdpm_be.repositories.PaymentTransactionRepository;
-import com.tkxdpm_be.utils.Utils;
-import model.BaseResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 import utils.ApiException;
 import utils.ERROR;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -127,10 +124,10 @@ public class VnPayService {
         }
     }
 
-    public String refund(Long orderId) throws IOException, ParseException {
+    public String refund(Long orderId) throws IOException, ParseException, ApiException {
         Optional<PaymentTransaction> oPaymentTransaction = this.paymentTransactionRepository.findByOrderId(orderId);
         PaymentTransaction paymentTransaction = oPaymentTransaction.get();
-        long amountVNPay = paymentTransaction.getAmount() * 100L;
+        long amountVNPay = paymentTransaction.getAmount();
 
         String vnp_TxnRef = paymentTransaction.getTransactionNum();
         String vnp_RequestId = VnPayConfig.getRandomNumber(8);
@@ -166,62 +163,47 @@ public class VnPayService {
 
         vnp_Params.put("vnp_SecureHash", vnp_SecureHash);
 
-        URL url = new URL(VnPayConfig.vnp_ApiUrl);
-
-        List fieldNames = new ArrayList(vnp_Params.keySet());
-        Collections.sort(fieldNames);
-        StringBuilder hashData = new StringBuilder();
-        StringBuilder query = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
-        while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                //Build hash data
-                hashData.append(fieldName);
-                hashData.append('=');
-                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                //Build query
-                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
-                query.append('=');
-                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
-                if (itr.hasNext()) {
-                    query.append('&');
-                    hashData.append('&');
-                }
-            }
-        }
-        String queryUrl = query.toString();
-        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-        String refundUrl = VnPayConfig.vnp_ApiUrl + "?" + queryUrl;
-        return refundUrl;
-
-//        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//        URL url = new URL(VnPayConfig.vnp_ApiUrl);
 //
-//        connection.setRequestMethod("POST");
-//        connection.setRequestProperty("Content-Type", "application/json");
-//        connection.setDoOutput(true);
-//        DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-//        Gson gson = new Gson();
-//        Type typeObject = new TypeToken<HashMap>() {}.getType();
-//        String gsonData = gson.toJson(vnp_Params, typeObject);
-//        wr.writeBytes(gsonData);
-//        wr.flush();
-//        wr.close();
-//        int responseCode = connection.getResponseCode();
-//        System.out.println("nSending 'POST' request to URL : " + url);
-//        System.out.println("Post Data : " + vnp_Params);
-//        System.out.println("Response Code : " + responseCode);
-//        BufferedReader in = new BufferedReader(
-//                new InputStreamReader(connection.getInputStream()));
-//        String output;
-//        StringBuffer response = new StringBuffer();
-//        while ((output = in.readLine()) != null) {
-//            response.append(output);
+//        List fieldNames = new ArrayList(vnp_Params.keySet());
+//        Collections.sort(fieldNames);
+//        StringBuilder hashData = new StringBuilder();
+//        StringBuilder query = new StringBuilder();
+//        Iterator itr = fieldNames.iterator();
+//        while (itr.hasNext()) {
+//            String fieldName = (String) itr.next();
+//            String fieldValue = (String) vnp_Params.get(fieldName);
+//            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+//                //Build hash data
+//                hashData.append(fieldName);
+//                hashData.append('=');
+//                hashData.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+//                //Build query
+//                query.append(URLEncoder.encode(fieldName, StandardCharsets.US_ASCII));
+//                query.append('=');
+//                query.append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII));
+//                if (itr.hasNext()) {
+//                    query.append('&');
+//                    hashData.append('&');
+//                }
+//            }
 //        }
-//        in.close();
-//        System.out.println(response.toString());
-//        return response.toString();
+//        String queryUrl = query.toString();
+//        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+//        String refundUrl = VnPayConfig.vnp_ApiUrl + "?" + queryUrl;
+        String restUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+        HttpHeaders header = new HttpHeaders();
+        header.set("accept-language", "vi");
+        header.set("Content-Type", "application/json");
+        HttpEntity<Map<String, String>> request = new HttpEntity<>(vnp_Params, header);
+        ResponseEntity<RefundResponse> restPageResponseEntity;
+        ParameterizedTypeReference<RefundResponse> responseType = new ParameterizedTypeReference<RefundResponse>() {
+        };
+        restPageResponseEntity = this.restTemplate.exchange(restUrl, HttpMethod.POST, request, responseType);
+        if (!restPageResponseEntity.getBody().getVnp_ResponseCode().equals("00")) {
+            throw new ApiException(ERROR.BAD_REQUEST, restPageResponseEntity.getBody().getVnp_Message());
+        }
+        return restPageResponseEntity.getBody().getVnp_ResponseCode();
     }
 
     public void makePaymentTransaction(Map<String, String> response) throws ApiException {
