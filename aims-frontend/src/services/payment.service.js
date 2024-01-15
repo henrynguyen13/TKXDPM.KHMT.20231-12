@@ -11,5 +11,9 @@ export const PaymentService = {
     makePayment: async (paymentInfo) => {
         const response = await axios.post("/payments", paymentInfo);
         return response;
+    },
+    refund: async (orderId) => {
+        const response = await axios.post(`/payments/refund/${orderId}`);
+        return response;
     }
 };
