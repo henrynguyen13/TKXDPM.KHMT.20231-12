@@ -23,11 +23,12 @@ public class PaymentTransaction {
     private Integer amount;
     private String createdAt;
 
-    public PaymentTransaction(Long orderId, String errorCode, String transactionId, String transactionContent, int amount, String createdAt) {
+    public PaymentTransaction(Long orderId, String errorCode, String transactionId, String transactionContent, String transactionNum, int amount, String createdAt) {
         this.orderId = orderId;
         this.errorCode = errorCode;
         this.transactionId = transactionId;
         this.transactionContent = transactionContent;
+        this.transactionNum = transactionNum;
         this.amount = amount;
         this.createdAt = createdAt;
     }

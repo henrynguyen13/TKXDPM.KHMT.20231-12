@@ -234,10 +234,11 @@ public class VnPayService {
         String errorCode = response.get("vnp_TransactionStatus");
         String transactionId = response.get("vnp_TransactionNo");
         String transactionContent = response.get("vnp_OrderInfo");
+        String transactionNum = response.get("vnp_TxnRef");
         int amount = Integer.parseInt(response.get("vnp_Amount"));
         String createdAt = response.get("vnp_PayDate");
         PaymentTransaction trans = new
-                PaymentTransaction(orderId, errorCode, transactionId, transactionContent, amount, createdAt);
+                PaymentTransaction(orderId, errorCode, transactionId, transactionContent, transactionNum, amount, createdAt);
         this.paymentTransactionRepository.save(trans);
         switch (trans.getErrorCode()) {
             case "00":
