@@ -28,6 +28,7 @@ const ResultPage = () => {
     const deleteCart = async () => {
         try {
           await CartService.deleteCart();
+          console.log("Delete cart");
         } catch (err) {
           console.error("Error:", err);
         }
@@ -36,6 +37,7 @@ const ResultPage = () => {
     const paymentSuccess = async () => {
         try {
           await OrderService.orderSuccess(orderId);
+          console.log("Payment Success");
         } catch (err) {
           console.error("Error:", err);
         }
@@ -54,17 +56,18 @@ const ResultPage = () => {
             };
             // eslint-disable-next-line no-unused-vars
             const response = await PaymentService.makePayment(paymentInfo);
+            console.log("Make Payment");
           } catch (err) {
             console.error("Error:", err);
           }
     }
 
     useEffect(() => {
-        makePayment();
-        paymentSuccess();
         deleteCart();
         updateNumProduct(0);
-    }, []);
+        makePayment();
+        paymentSuccess();
+    }, [orderId]);
 
     return (
         <>
