@@ -1,7 +1,7 @@
 import HeaderBar from '../../components/layout/HeaderBar';
 import './ResultPage.css';
 import SuccessIcon from '../../assets/images/successIcon.png';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { convertDateTimeFormat, formatNumber } from '../../common/utils';
 import { CartService } from '../../services/cart.service';
 import { useEffect } from 'react';
@@ -33,6 +33,8 @@ const ResultPage = () => {
           console.error("Error:", err);
         }
     };
+
+    const navigate = useNavigate();
 
     const paymentSuccess = async () => {
         try {
@@ -96,6 +98,7 @@ const ResultPage = () => {
                         </div>
                     </div>
                 </div>
+                <div className='homepage-btn' onClick={() => navigate('/')}>Về trang chủ</div>
             </div>
         </>
     );
