@@ -36,3 +36,18 @@
     display: flex;
     justify-content: space-between;
 }
+.result-page .homepage-btn {
+    background-color: rgb(32, 158, 212);
+    color: white;
+    text-align: center;
+    width: 150px;
+    padding: 10px 0;
+    border-radius: 4px;
+    margin: auto;
+    margin-top: 20px;
+    transition: 0.2s;
+    cursor: pointer;
+}
+.result-page .homepage-btn:hover {
+    background-color: rgb(20, 124, 168);
+}
