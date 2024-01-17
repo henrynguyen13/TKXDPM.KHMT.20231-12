@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface PaymentTransactionRepository extends JpaRepository<PaymentTransaction, Long>, JpaSpecificationExecutor<PaymentTransaction> {
-    Optional<PaymentTransaction> findByOrderId(Long orderId);
+    PaymentTransaction findDistinctFirstByOrderId(Long orderId);
 }

@@ -125,8 +125,7 @@ public class VnPayService {
     }
 
     public String refund(Long orderId) throws IOException, ParseException, ApiException {
-        Optional<PaymentTransaction> oPaymentTransaction = this.paymentTransactionRepository.findByOrderId(orderId);
-        PaymentTransaction paymentTransaction = oPaymentTransaction.get();
+        PaymentTransaction paymentTransaction = this.paymentTransactionRepository.findDistinctFirstByOrderId(orderId);
         long amountVNPay = paymentTransaction.getAmount();
 
         String vnp_TxnRef = paymentTransaction.getTransactionNum();
@@ -159,7 +158,7 @@ public class VnPayService {
                 "02", vnp_TxnRef, String.valueOf(amountVNPay), "", paymentTransaction.getCreatedAt(),
                 "aims", vnp_CreateDate, vnp_IpAddr, orderInfor);
 
-        String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hash_Data.toString());
+        String vnp_SecureHash = VnPayConfig.hmacSHA512(VnPayConfig.secretKey, hash_Data);
 
         vnp_Params.put("vnp_SecureHash", vnp_SecureHash);
 
