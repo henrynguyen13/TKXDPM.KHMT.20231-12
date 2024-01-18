@@ -3,7 +3,9 @@
 Nhóm 12 chúng em xin chân thành cảm ơn cô Nguyễn Thị Thu Trang và anh Lê Thanh Giang đã nhiệt tình chỉ dạy và hướng dẫn chúng em trong quá trình thực hiện bài tập lớn môn học.
 
 Link video demo: 
-Youtube: https://www.youtube.com/watch?v=lpj8yPdvZpg
+
+Youtube: https://www.youtube.com/watch?v=lpj8yPdvZpg 
+
 Drive: https://drive.google.com/file/d/1IAQQ6yCK2zr7vtzXcFQfsgqM3gN2zvjc/view?usp=sharing
 ## Author
 
